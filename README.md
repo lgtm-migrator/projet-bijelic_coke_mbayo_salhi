@@ -7,7 +7,7 @@
 
 ## About the project
 
-This project consist in the creation of a static website generator. It is given within the lecture DIL in HEIG-VD.
+This project consists in the creation of a static website generator. It is given within the lecture DIL in HEIG-VD.
 
 ## Built with
 - Maven

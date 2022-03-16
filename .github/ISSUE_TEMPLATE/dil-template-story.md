@@ -1,6 +1,6 @@
 ---
 name: DIL Template Story
-about: Modèle de storie pour le projet DIL
+about: Modèle de story pour le projet DIL
 title: ''
 labels: ''
 assignees: ''

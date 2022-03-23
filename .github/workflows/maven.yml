@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    name: Maven CI Compilation and testing
 
     runs-on: ubuntu-latest
 

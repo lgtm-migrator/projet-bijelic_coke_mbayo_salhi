@@ -4,7 +4,7 @@ import picocli.CommandLine.Command;
 
 import java.util.concurrent.Callable;
 
-@Command(name = "Clean")
+@Command(name = "clean")
 public class Clean implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {

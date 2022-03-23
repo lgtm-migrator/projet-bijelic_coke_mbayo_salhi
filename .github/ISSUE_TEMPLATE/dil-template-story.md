@@ -7,15 +7,40 @@ assignees: ''
 
 ---
 
-# En tant que ... 
+# User story
+## Description 
 
-# Estimation de la durée (en heures) 
-## Optimiste
+En tant que < un type d'utilisateur >, 
+je veux < un but > 
+pour que < une raison >
 
-## Pessimiste 
+### Sous-stories
+- [ ] Sous-story 1
+- [ ] Sous-story 2
+- [ ] Sous-story 3
 
-## Attendu 
+## Estimation de la durée
+### Optimiste
 
-## Temps pris en pratique
+| **Nombre d'heures** | - |
+|-----------------------------|---|
+
+### Pessimiste 
+
+| **Nombre d'heures** | - |
+|-----------------------------|---|
+
+### Attendu 
+
+| **Nombre d'heures** | - |
+|-----------------------------|---|
+
+### Temps pris en pratique
+
+| **Nombre d'heures** | - |
+|-----------------------------|---|
 
 # Liens utiles
+- [Lien 1]()
+- [Lien 2]()
+- [Lien 3]()

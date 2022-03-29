@@ -53,6 +53,7 @@ public class Init implements Callable<Integer> {
             }
         }
 
+        // copy config directory to init path
         if(!exists || overwrite) {
             File sourceDirectory = new File("config/");
             File destinationDirectory = new File(myPath.toString());

@@ -12,7 +12,8 @@ import java.util.concurrent.Callable;
         subcommands = {New.class, Clean.class, Build.class, Serve.class})
 public class Main implements Callable<Integer>
 {
-    @CommandLine.Option(names = {"-V", "--version"}, description = "display version info")
+    @CommandLine.Option(names = {"-version"}, description = "display version " +
+            "info")
     boolean versionInfoRequested;
 
     @Override

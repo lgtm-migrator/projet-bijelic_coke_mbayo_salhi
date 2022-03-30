@@ -69,24 +69,9 @@ public class MainTest
 
     @Test
     public void exitCodeWithParametersShouldBeZero() {
-        int exitCode1 = new CommandLine(new Main()).execute("-V");
-        int exitCode2 = new CommandLine(new Main()).execute("--version");
+        int exitCode = new CommandLine(new Main()).execute("-V");
 
-        assertEquals(0, exitCode1);
-        assertEquals(0, exitCode2);
-    }
-
-    @Test
-    public void staticVShouldOutputCorrectMessage() throws IOException {
-
-        String result = "Current version : " + System.getProperty("project" +
-                ".version") + "\n";
-
-        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            System.setOut(new PrintStream(output));
-            new CommandLine(new Main()).execute("-V");
-            assertEquals(result, output.toString());
-        }
+        assertEquals(0, exitCode);
     }
 
     @Test
@@ -97,8 +82,9 @@ public class MainTest
 
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             System.setOut(new PrintStream(output));
-            new CommandLine(new Main()).execute("--version");
+            new CommandLine(new Main()).execute("-version");
             assertEquals(result, output.toString());
         }
     }
+
 }

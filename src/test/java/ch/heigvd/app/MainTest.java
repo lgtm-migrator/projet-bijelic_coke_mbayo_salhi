@@ -4,9 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import picocli.CommandLine;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -17,15 +15,6 @@ import static org.junit.Assert.*;
  */
 public class MainTest
 {
-    /**
-     * Rigorous Test :-)
-     */
-    @Test
-    public void shouldAnswerWithTrue()
-    {
-        assertTrue( true );
-    }
-
     @Test
     /**
      * Test the "statique Clean /my/site" command
@@ -75,6 +64,41 @@ public class MainTest
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    public void exitCodeWithParametersShouldBeZero() {
+        int exitCode1 = new CommandLine(new Main()).execute("-V");
+        int exitCode2 = new CommandLine(new Main()).execute("--version");
+
+        assertEquals(0, exitCode1);
+        assertEquals(0, exitCode2);
+    }
+
+    @Test
+    public void staticVShouldOutputCorrectMessage() throws IOException {
+
+        String result = "Current version : " + System.getProperty("project" +
+                ".version") + "\n";
+
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            System.setOut(new PrintStream(output));
+            new CommandLine(new Main()).execute("-V");
+            assertEquals(result, output.toString());
+        }
+    }
+
+    @Test
+    public void staticVersionShouldOutputCorrectMessage() throws IOException {
+
+        String result = "Current version : " + System.getProperty("project" +
+                ".version") + "\n";
+
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            System.setOut(new PrintStream(output));
+            new CommandLine(new Main()).execute("--version");
+            assertEquals(result, output.toString());
         }
     }
 }

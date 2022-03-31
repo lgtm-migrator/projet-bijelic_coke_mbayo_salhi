@@ -5,9 +5,9 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 /**
- * MarkdownParser class
+ * MarkdownConverter class
  */
-public class MarkdownParser {
+public class MarkdownConverter {
 
    /**
     * Converts a markdown file to html
@@ -15,7 +15,7 @@ public class MarkdownParser {
     * @return input text converted to html
     * @see <a href="https://github.com/vsch/flexmark-java">FlexMark</a>
     */
-   public static String parse(String input) {
+   public static String convert(String input) {
 
       // Used to add options
       MutableDataSet options = new MutableDataSet();

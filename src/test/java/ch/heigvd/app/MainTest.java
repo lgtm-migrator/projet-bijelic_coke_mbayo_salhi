@@ -68,23 +68,14 @@ public class MainTest
     }
 
     @Test
-    public void exitCodeWithParametersShouldBeZero() {
+    /**
+     * Test the "static -V" command
+     */
+    public void staticVersionShouldExitWithZero() {
         int exitCode = new CommandLine(new Main()).execute("-V");
-
         assertEquals(0, exitCode);
     }
 
-    @Test
-    public void staticVersionShouldOutputCorrectMessage() throws IOException {
 
-        String result = "Current version : " + System.getProperty("project" +
-                ".version") + "\n";
-
-        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            System.setOut(new PrintStream(output));
-            new CommandLine(new Main()).execute("-version");
-            assertEquals(result, output.toString());
-        }
-    }
 
 }

@@ -1,6 +1,5 @@
 package ch.heigvd.app;
 
-
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 

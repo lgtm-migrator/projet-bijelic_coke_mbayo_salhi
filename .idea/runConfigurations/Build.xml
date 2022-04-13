@@ -2,7 +2,7 @@
   <configuration default="false" name="Build" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="ch.heigvd.app.Main" />
     <module name="projet-bijelic_coke_mbayo_salhi" />
-    <option name="PROGRAM_PARAMETERS" value="Build" />
+    <option name="PROGRAM_PARAMETERS" value="build" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="ch.heigvd.app.*" />

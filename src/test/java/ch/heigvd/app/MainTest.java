@@ -61,7 +61,7 @@ public class MainTest
 
         File path = new File("monTEST/siteTEST/build");
 
-        int exitCode = cmd.execute("Clean", "/monTEST/siteTEST/");
+        int exitCode = cmd.execute("clean", "/monTEST/siteTEST/");
         assertEquals(0, exitCode);
 
         assertFalse("Directory still exists", Files.exists(path.toPath()));

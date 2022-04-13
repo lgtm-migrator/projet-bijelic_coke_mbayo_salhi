@@ -7,7 +7,7 @@ import picocli.CommandLine.Command;
 import java.io.File;
 import java.util.concurrent.Callable;
 
-@Command(name = "Clean")
+@Command(name = "clean")
 public class Clean implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Path to build " +
             "directory")

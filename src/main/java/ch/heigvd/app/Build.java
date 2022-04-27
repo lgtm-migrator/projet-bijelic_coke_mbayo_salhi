@@ -4,13 +4,18 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 @Command(name = "build")
 public class Build implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Path to build " + "directory")
     private String sourcePath;
-    final private String buildDirectoryName = "build";
+    final private String BUILD_DIRECTORY_NAME = "build";
 
     @Override
     public Integer call() throws Exception {
@@ -18,17 +23,23 @@ public class Build implements Callable<Integer> {
 
         System.out.println("Building in : " + sourcePath);
 
+        createBuildFolder(sourcePath);
+
         return 0;
     }
 
     /**
      * Create a /build folder in specified directory
      */
-    private void createBuildFolder(String directory){
-        // If directory is not empty
-            // Create a /build folder
-        // Else
-            // throw error
+    private void createBuildFolder(String directory) throws IOException {
+        Path folderPath = Paths.get(directory);
+        if(Files.exists(folderPath)){
+            Path buildPath = Paths.get(folderPath + "/build");
+            Files.createDirectories(buildPath);
+        }
+        else {
+            throw new FileNotFoundException("Specified file does not exists !");
+        }
     }
 
     /**
@@ -48,10 +59,10 @@ public class Build implements Callable<Integer> {
 
     /**
      * Parse markdown file content to HTML
-     * @param srcFileName Source markdown file location
-     * @param destFileName Destination HTML file location
+     * @param sourceFileName Source markdown file location
+     * @param destinationFileName Destination HTML file location
      */
-    private void parseMarkdownToHTML(String srcFileName, String destFileName){
+    private void parseMarkdownToHTML(String sourceFileName, String destinationFileName){
         // Open MD src file with readline
         // Create HTML file and open it with readline
         // Ignore header (remove) (check if there is a header)

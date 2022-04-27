@@ -43,22 +43,42 @@ public class Build implements Callable<Integer> {
         Path source = Paths.get(sourcePath);
         Path destination = Paths.get(buildPath);
 
-        if(Files.exists(destination))
+        if(Files.exists(destination)) {
+            System.out.println("Directory build already exists. It will be deleted");
             FileUtils.deleteDirectory(destination.toFile());
+            System.out.println("Directory build successfully deleted");
+        }
 
+        // Go through all directory and copy files and folders in build folder
         Files.walkFileTree(source, new SimpleFileVisitor<>() {
+            /**
+             * Visit directory and copy it in /build/
+             * @param dir Path of the directory
+             * @param attrs Attributes of directory
+             * @return Status of the directory visit
+             * @throws IOException Throw exception if creation fails
+             */
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                 Files.createDirectories(destination.resolve(source.relativize(dir)));
+                System.out.println("Directory " + dir + " successfully created");
                 return FileVisitResult.CONTINUE;
             }
 
+            /**
+             * Visit files and copy or convert markdown to html
+             * @param file Path of the file
+             * @param attrs Attributes the file
+             * @return Status of the file visit
+             * @throws IOException Throw exception if creation fails
+             */
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 String fileExtension = FilenameUtils.getExtension(file.toString());
+                // Check if visited file extension is not in excluded list
                 if(!FILE_TYPE_TO_EXCLUDE.contains(fileExtension)){
                     if(fileExtension.equals(MARKDOWN_FILE_TYPE)){
-                        StringBuilder HTMLContent = new StringBuilder();
+                        StringBuilder htmlContent = new StringBuilder();
 
                         try (FileInputStream fis = new FileInputStream(file.toString());
                              InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
@@ -67,42 +87,37 @@ public class Build implements Callable<Integer> {
                             String str;
                             boolean startToCopy = false;
                             while ((str = reader.readLine()) != null) {
-                                if(str.equals("==="))
+                                // Ignore markdown file header and start copying markdown from specific line
+                                if(str.equals("---"))
                                     startToCopy = true;
                                 if(startToCopy){
-                                    HTMLContent.append(MarkdownConverter.convert(str));
+                                    htmlContent.append(MarkdownConverter.convert(str));
                                 }
                             }
                         } catch (IOException e) {
-                            System.err.println("Error while ");
+                            System.err.println("Error while reading markdown file");
                         }
 
+                        Path htmlFile = Paths.get(
+                                FilenameUtils.removeExtension(
+                                        destination.resolve(source.relativize(file)).toString()) + ".html"
+                        );
+                        Files.createFile(htmlFile);
+
+                        // Write HTML content in destination file
+                        OutputStreamWriter htmlWriter = new OutputStreamWriter(new FileOutputStream(htmlFile.toString()), StandardCharsets.UTF_8);
+                        htmlWriter.write(htmlContent.toString());
+                        htmlWriter.flush();
+                        htmlWriter.close();
+                        System.out.println("File " + htmlFile + " successfully created");
                     }
-                    Files.copy(file, destination.resolve(source.relativize(file)), options);
+                    else {
+                        Files.copy(file, destination.resolve(source.relativize(file)), options);
+                        System.out.println("File " + file + " successfully copied");
+                    }
                 }
                 return FileVisitResult.CONTINUE;
             }
         });
-        // For each file in a directory
-            // If it is a .md file
-                // parseMarkdownToHTML
-            // Else if not yaml
-                // Simply copy file
-            // Else if another direcory
-                // create directory in dest
-                // copyFiles of that directory
-    }
-
-    /**
-     * Parse markdown file content to HTML
-     * @param sourceFileName Source markdown file location
-     * @param destinationFileName Destination HTML file location
-     */
-    private void parseMarkdownToHTML(String sourceFileName, String destinationFileName){
-        // Open MD src file with readline
-        // Create HTML file and open it with readline
-        // Ignore header (remove) (check if there is a header)
-        // Markdown (src) to HTML (dest) with the use of a buffer
-        // Close files
     }
 }

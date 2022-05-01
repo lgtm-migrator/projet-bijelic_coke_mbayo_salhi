@@ -18,9 +18,10 @@ public class BuildTest {
     private final String dirName = "monTEST/";
     private final String websiteName = dirName + "siteTEST/";
 
-
     @Before
     public void createBasicFolderForTesting(){
+        deleteTestDirectory();
+
         String indexMdContent = "titre: Mon premier article\n" +
                 "auteur: Bertil Chapuis\n" +
                 "date: 2021-03-10\n" +
@@ -116,8 +117,13 @@ public class BuildTest {
     }
 
     @After
-    public void deleteTestDirectory() throws IOException {
-        FileUtils.deleteDirectory(Paths.get(dirName).toFile());
+    public void deleteTestDirectory() {
+        System.out.println("Delete test directory if exists");
+        try{
+            FileUtils.deleteDirectory(Paths.get(dirName).toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

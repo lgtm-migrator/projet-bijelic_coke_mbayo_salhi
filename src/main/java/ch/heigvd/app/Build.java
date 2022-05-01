@@ -87,12 +87,12 @@ public class Build implements Callable<Integer> {
                             String str;
                             boolean startToCopy = false;
                             while ((str = reader.readLine()) != null) {
-                                // Ignore markdown file header and start copying markdown from specific line
-                                if(str.equals("---"))
-                                    startToCopy = true;
                                 if(startToCopy){
                                     htmlContent.append(MarkdownConverter.convert(str));
                                 }
+                                // Ignore markdown file header and start copying markdown from specific line
+                                if(str.equals("---"))
+                                    startToCopy = true;
                             }
                         } catch (IOException e) {
                             System.err.println("Error while reading markdown file");

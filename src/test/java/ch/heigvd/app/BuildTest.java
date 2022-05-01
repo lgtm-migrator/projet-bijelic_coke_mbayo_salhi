@@ -1,7 +1,8 @@
 package ch.heigvd.app;
 
 import org.apache.commons.io.FileUtils;
-import org.codehaus.groovy.runtime.ProcessGroovyMethods;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 
@@ -14,9 +15,12 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class BuildTest {
-    public String createBasicFolderForTesting(){
-        String dirName = "monTEST/siteTEST/";
+    private final String dirName = "monTEST/";
+    private final String websiteName = dirName + "siteTEST/";
 
+
+    @Before
+    public void createBasicFolderForTesting(){
         String indexMdContent = "titre: Mon premier article\n" +
                 "auteur: Bertil Chapuis\n" +
                 "date: 2021-03-10\n" +
@@ -35,12 +39,12 @@ public class BuildTest {
         String configYaml = "title: Mon site internet";
 
         try{
-            Path dossierPath = Paths.get(dirName + "dossier/");
+            Path dossierPath = Paths.get(websiteName + "dossier/");
             Files.createDirectories(dossierPath);
             System.out.println("Directory " + dossierPath + " is created!");
 
             OutputStreamWriter pageWriter = new OutputStreamWriter(new FileOutputStream(dossierPath + "/page.md"), StandardCharsets.UTF_8);
-            pageWriter.write(indexMdContent);
+            pageWriter.write(pageMdContent);
             pageWriter.flush();
             pageWriter.close();
             System.out.println("File dossier/page.md is created and its content added!");
@@ -48,13 +52,13 @@ public class BuildTest {
             Path imagePath = Paths.get(dossierPath + "/image.png");
             Files.createFile(imagePath);
 
-            OutputStreamWriter indexWriter = new OutputStreamWriter(new FileOutputStream(dirName + "/index.md"), StandardCharsets.UTF_8);
+            OutputStreamWriter indexWriter = new OutputStreamWriter(new FileOutputStream(websiteName + "/index.md"), StandardCharsets.UTF_8);
             indexWriter.write(indexMdContent);
             indexWriter.flush();
             indexWriter.close();
             System.out.println("File index.md is created and its content added!");
 
-            OutputStreamWriter configWriter = new OutputStreamWriter(new FileOutputStream(dirName + "/config.yaml"), StandardCharsets.UTF_8);
+            OutputStreamWriter configWriter = new OutputStreamWriter(new FileOutputStream(websiteName + "/config.yaml"), StandardCharsets.UTF_8);
             configWriter.write(configYaml);
             configWriter.flush();
             configWriter.close();
@@ -63,25 +67,23 @@ public class BuildTest {
         } catch (IOException e) {
             System.err.println("Failed to create directory and files" + e.getMessage());
         }
-
-        return dirName;
     }
 
     @Test
     public void statiqueBuildShouldCopyRightFilesAndConvertMarkdownToHTML() throws IOException {
-        String pageHTMLContent = "<h1>Ma première page</h1>";
+        String pageHTMLContent = "<h1>Ma première page</h1>\n";
 
         String indexHTMLContent = "<h1>Mon premier article</h1>\n" +
                 "<h2>Mon sous-titre</h2>\n" +
                 "<p>Le contenu de mon article.</p>\n" +
-                "<img src=\"./image.png\" alt=\"Une image\"/>";
+                "<p><img src=\"./image.png\" alt=\"Une image\" /></p>\n";
 
         Main app = new Main();
         StringWriter sw = new StringWriter();
         CommandLine cmd = new CommandLine(app);
         cmd.setOut(new PrintWriter(sw));
 
-        String testPath = createBasicFolderForTesting();
+        String testPath = websiteName;
 
         int exitCode = cmd.execute("build", testPath);
         assertEquals(0, exitCode);
@@ -104,13 +106,18 @@ public class BuildTest {
         Path indexPath = Paths.get(buildPath + "/index.html");
         assertTrue("Index.html file could not be created", Files.exists(indexPath));
 
-        assertEquals("Page.html content is not as expected!",
-                FileUtils.readFileToString(pagePath.toFile(), StandardCharsets.UTF_8),
-                pageHTMLContent);
+        assertEquals("Page.html content is not as expected!", pageHTMLContent,
+                FileUtils.readFileToString(pagePath.toFile(), StandardCharsets.UTF_8)
+        );
 
-        assertEquals("Index.html content is not as expected!",
-                FileUtils.readFileToString(indexPath.toFile(), StandardCharsets.UTF_8),
-                indexHTMLContent);
+        assertEquals("Index.html content is not as expected!", indexHTMLContent,
+                FileUtils.readFileToString(indexPath.toFile(), StandardCharsets.UTF_8)
+                );
+    }
+
+    @After
+    public void deleteTestDirectory() throws IOException {
+        FileUtils.deleteDirectory(Paths.get(dirName).toFile());
     }
 }
 

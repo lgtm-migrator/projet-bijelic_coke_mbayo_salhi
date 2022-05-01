@@ -60,8 +60,10 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                Files.createDirectories(destination.resolve(source.relativize(dir)));
-                System.out.println("Directory " + dir + " successfully created");
+                if(dir != Paths.get(sourcePath + "/" + BUILD_DIRECTORY_NAME)){
+                    Files.createDirectories(destination.resolve(source.relativize(dir)));
+                    System.out.println("Directory " + dir + " successfully created");
+                }
                 return FileVisitResult.CONTINUE;
             }
 

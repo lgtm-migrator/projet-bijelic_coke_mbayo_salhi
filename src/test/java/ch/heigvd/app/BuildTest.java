@@ -62,7 +62,7 @@ public class BuildTest {
             configWriter.write(configYaml);
             configWriter.flush();
             configWriter.close();
-            System.out.println("File index.md is created and its content added!");
+            System.out.println("File config.yaml is created and its content added!");
 
         } catch (IOException e) {
             System.err.println("Failed to create directory and files" + e.getMessage());

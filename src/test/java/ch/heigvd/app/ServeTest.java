@@ -10,10 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 public class ServeTest {
-    Context ctx = mock(Context.class);
     /**
      * Rigorous Test :-)
      */
@@ -81,8 +79,8 @@ public class ServeTest {
             clientSocket.close();
 
         } catch (IOException ex){
-            //M'indique si il y a un problème dans le try
-            assertFalse(true);
+            //M'indique s'il y a un problème dans le try
+            fail();
         }
     }
 

@@ -1,0 +1,38 @@
+---
+name: "tagged-release"
+env:
+  APP_NAME: static
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v3
+      - run: mvn clean package install | echo "done!"
+      - run: mkdir staging && cp target/*.jar staging
+      - run: mv staging/*.jar staging/$APP_NAME.jar
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Target
+          path: staging
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Target
+      - run: ls
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          automatic_release_tag: "latest"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            LICENSE.txt
+            *.jar

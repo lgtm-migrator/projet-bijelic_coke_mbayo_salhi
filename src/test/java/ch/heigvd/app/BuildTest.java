@@ -1,5 +1,6 @@
 package ch.heigvd.app;
 
+import ch.heigvd.app.utils.TestDirectoryManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -66,7 +67,7 @@ public class BuildTest {
             System.out.println("File config.yaml is created and its content added!");
 
         } catch (IOException e) {
-            System.err.println("Failed to create directory and files" + e.getMessage());
+            System.err.println("Error while creating test directory " + e.getMessage());
         }
     }
 
@@ -111,7 +112,7 @@ public class BuildTest {
 
         assertEquals("Index.html content is not as expected!", indexHTMLContent,
                 FileUtils.readFileToString(indexPath.toFile(), StandardCharsets.UTF_8)
-                );
+        );
     }
 
 
@@ -119,8 +120,9 @@ public class BuildTest {
         System.out.println("Delete test directory if exists");
         try{
             FileUtils.deleteDirectory(dirPath.toFile());
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error while deleting test directory " + e.getMessage());
         }
     }
 }

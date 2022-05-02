@@ -1,5 +1,6 @@
 package ch.heigvd.app;
 
+import ch.heigvd.app.utils.TestDirectoryManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -19,54 +20,11 @@ public class BuildTest {
     private final String websiteName = dirName + "siteTEST/";
 
     @Before
-    public void createBasicFolderForTesting(){
-        deleteTestDirectory();
-
-        String indexMdContent = "titre: Mon premier article\n" +
-                "auteur: Bertil Chapuis\n" +
-                "date: 2021-03-10\n" +
-                "---\n" +
-                "# Mon premier article\n" +
-                "## Mon sous-titre\n" +
-                "Le contenu de mon article.\n"+
-                "![Une image](./image.png)";
-
-        String pageMdContent = "titre: Ma premiere page\n" +
-                "auteur: Bertil Chapuis\n" +
-                "date: 2021-03-10\n" +
-                "---\n" +
-                "# Ma première page\n";
-
-        String configYaml = "title: Mon site internet";
-
-        try{
-            Path dossierPath = Paths.get(websiteName + "dossier/");
-            Files.createDirectories(dossierPath);
-            System.out.println("Directory " + dossierPath + " is created!");
-
-            OutputStreamWriter pageWriter = new OutputStreamWriter(new FileOutputStream(dossierPath + "/page.md"), StandardCharsets.UTF_8);
-            pageWriter.write(pageMdContent);
-            pageWriter.flush();
-            pageWriter.close();
-            System.out.println("File dossier/page.md is created and its content added!");
-
-            Path imagePath = Paths.get(dossierPath + "/image.png");
-            Files.createFile(imagePath);
-
-            OutputStreamWriter indexWriter = new OutputStreamWriter(new FileOutputStream(websiteName + "/index.md"), StandardCharsets.UTF_8);
-            indexWriter.write(indexMdContent);
-            indexWriter.flush();
-            indexWriter.close();
-            System.out.println("File index.md is created and its content added!");
-
-            OutputStreamWriter configWriter = new OutputStreamWriter(new FileOutputStream(websiteName + "/config.yaml"), StandardCharsets.UTF_8);
-            configWriter.write(configYaml);
-            configWriter.flush();
-            configWriter.close();
-            System.out.println("File config.yaml is created and its content added!");
-
+    public void initTestDirectory(){
+        try {
+            TestDirectoryManager.createBasicFolderForTesting(dirName, websiteName);
         } catch (IOException e) {
-            System.err.println("Failed to create directory and files" + e.getMessage());
+            System.err.println("Error while creating test directory " + e.getMessage());
         }
     }
 
@@ -113,16 +71,15 @@ public class BuildTest {
 
         assertEquals("Index.html content is not as expected!", indexHTMLContent,
                 FileUtils.readFileToString(indexPath.toFile(), StandardCharsets.UTF_8)
-                );
+        );
     }
 
     @After
-    public void deleteTestDirectory() {
-        System.out.println("Delete test directory if exists");
-        try{
-            FileUtils.deleteDirectory(Paths.get(dirName).toFile());
+    public void deleteTestDirectory(){
+        try {
+            TestDirectoryManager.deleteTestDirectory(dirName);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error while deleting test directory " + e.getMessage());
         }
     }
 }

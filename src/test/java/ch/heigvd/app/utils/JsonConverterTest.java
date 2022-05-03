@@ -24,4 +24,19 @@ public class JsonConverterTest {
         assertEquals(result.charset, output.charset);
     }
 
+    @Test
+    public void parserShouldParsePageJsonStringCorrectly() {
+        PageConfig result = new PageConfig("titre", "jdoe", "2022-03-29");
+        String input = "{\n" +
+                "  \"titre\" : \"titre\",\n" +
+                "  \"auteur\" : \"jdoe\",\n" +
+                "  \"date\" : \"2022-03-29\"\n" +
+                "}";
+        PageConfig output = JsonConverter.pageConvert(input);
+
+        assertEquals(result.titre , output.titre);
+        assertEquals(result.auteur, output.auteur);
+        assertEquals(result.date, output.date);
+    }
+
 }

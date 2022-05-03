@@ -26,16 +26,16 @@ public class JsonConverterTest {
 
     @Test
     public void parserShouldParsePageJsonStringCorrectly() {
-        PageConfig result = new PageConfig("titre", "jdoe", "2022-03-29");
+        PageConfig result = new PageConfig("title", "jdoe", "2022-03-29");
         String input = "{\n" +
-                "  \"titre\" : \"titre\",\n" +
-                "  \"auteur\" : \"jdoe\",\n" +
+                "  \"title\" : \"title\",\n" +
+                "  \"author\" : \"jdoe\",\n" +
                 "  \"date\" : \"2022-03-29\"\n" +
                 "}";
         PageConfig output = JsonConverter.pageConvert(input);
 
-        assertEquals(result.titre , output.titre);
-        assertEquals(result.auteur, output.auteur);
+        assertEquals(result.title , output.title);
+        assertEquals(result.author, output.author);
         assertEquals(result.date, output.date);
     }
 

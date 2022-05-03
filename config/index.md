@@ -1,6 +1,6 @@
 {
-"titre" : "Titre",
-"auteur" : "Prenom Nom",
+"title" : "Title",
+"author" : "Name",
 "date" : "2022-03-29"
 }
 ---

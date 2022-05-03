@@ -58,15 +58,15 @@ class PageConfig {
     /**
      * Constructor for test purpose
      * @param title a title
-     * @param lang a language (ex: fr)
-     * @param charset a charset (ex: utf-8)
+     * @param author name
+     * @param date the date
      */
-    public PageConfig(String title, String auteur, String date){
-        this.titre = title;
-        this.auteur = auteur;
+    public PageConfig(String title, String author, String date){
+        this.title = title;
+        this.author = author;
         this.date = date;
     }
-    String titre;
-    String auteur;
+    String title;
+    String author;
     String date;
 }

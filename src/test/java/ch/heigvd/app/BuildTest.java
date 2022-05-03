@@ -16,13 +16,13 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class BuildTest {
-    private final String dirName = "monTEST/";
-    private final String websiteName = dirName + "siteTEST/";
+    private final Path dirPath = Paths.get("monTEST/");
+    private final String websiteName = "siteTEST";
 
     @Before
     public void initTestDirectory(){
         try {
-            TestDirectoryManager.createBasicFolderForTesting(dirName, websiteName);
+            TestDirectoryManager.createBasicFolderForTesting(dirPath, websiteName);
         } catch (IOException e) {
             System.err.println("Error while creating test directory " + e.getMessage());
         }
@@ -77,7 +77,7 @@ public class BuildTest {
     @After
     public void deleteTestDirectory(){
         try {
-            TestDirectoryManager.deleteTestDirectory(dirName);
+            TestDirectoryManager.deleteTestDirectory(dirPath);
         } catch (IOException e) {
             System.err.println("Error while deleting test directory " + e.getMessage());
         }

@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class BuildTest {
+
     private final Path dirPath = Paths.get("montest");
     private final Path websitePath = dirPath.resolve("sitetest");
 
@@ -120,6 +121,7 @@ public class BuildTest {
         System.out.println("Delete test directory if exists");
         try{
             FileUtils.deleteDirectory(dirPath.toFile());
+
 
         } catch (IOException e) {
             System.err.println("Error while deleting test directory " + e.getMessage());

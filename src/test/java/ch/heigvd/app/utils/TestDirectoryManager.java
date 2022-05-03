@@ -22,7 +22,7 @@ public class TestDirectoryManager {
      * @param websiteName Test website name
      * @throws IOException Error during creation or deletion of files
      */
-    public static void createBasicFolderForTesting(String dirName, String websiteName) throws IOException {
+    public static void createBasicFolderForTesting(Path dirName, String websiteName) throws IOException {
         deleteTestDirectory(dirName);
 
         String indexMdContent = "titre: Mon premier article\n" +
@@ -42,18 +42,18 @@ public class TestDirectoryManager {
 
         String configYaml = "title: Mon site internet";
 
-        Path dossierPath = Paths.get(websiteName + "dossier/");
+        Path dossierPath = Paths.get(websiteName + "/dossier/");
         Files.createDirectories(dossierPath);
         System.out.println("Directory " + dossierPath + " is created!");
 
-        createFile(Paths.get(websiteName + "dossier/page.md"), pageMdContent);
+        createFileWithContent(Paths.get(websiteName + "/dossier/page.md"), pageMdContent);
 
         Path imagePath = Paths.get(dossierPath + "/image.png");
         Files.createFile(imagePath);
 
-        createFile(Paths.get(websiteName + "index.md"), indexMdContent);
+        createFileWithContent(Paths.get(websiteName + "/index.md"), indexMdContent);
 
-        createFile(Paths.get(websiteName + "config.yaml"), configYaml);
+        createFileWithContent(Paths.get(websiteName + "/config.yaml"), configYaml);
     }
 
     /**
@@ -62,11 +62,11 @@ public class TestDirectoryManager {
      * @param websiteName Test website name
      * @throws IOException Error during creation or deletion of files
      */
-    public static void createTemplateTestDirectory(String dirName, String websiteName) throws IOException {
+    public static void createTemplateTestDirectory(Path dirName, String websiteName) throws IOException {
         createBasicFolderForTesting(dirName, websiteName);
 
-        Path templatePath = Paths.get(websiteName + "template/");
-        Files.createDirectories(templatePath);
+        Path templatePath = Paths.get(websiteName + "/template/");
+        Files.createDirectory(templatePath);
         System.out.println("Directory " + templatePath + " is created!");
 
         String layoutHtmlContent = "<html lang=\"en\">\n" +
@@ -75,7 +75,7 @@ public class TestDirectoryManager {
                                         "<title>{{ site.titre }} | {{ page.titre }}</title>\n" +
                                     "</head>\n" +
                                     "<body>\n" +
-                                        "{% include menu.html }\n" +
+                                        "{{> menu }}\n" +
                                         "{{ content }}\n" +
                                     "</body>\n" +
                                     "</html>";
@@ -85,9 +85,9 @@ public class TestDirectoryManager {
                                     "<li><a href=\"/content/page.html\">page</a></li>\n" +
                                  "</ul>";
 
-        createFile(Paths.get(templatePath + "/layout.html"), layoutHtmlContent);
+        createFileWithContent(Paths.get(templatePath + "/layout.html"), layoutHtmlContent);
 
-        createFile(Paths.get(templatePath + "/menu.html"), menuHtmlContent);
+        createFileWithContent(Paths.get(templatePath + "/menu.html"), menuHtmlContent);
     }
 
 
@@ -96,9 +96,9 @@ public class TestDirectoryManager {
      * @param dirName Name of the test directory
      * @throws IOException Error during test directory deletion
      */
-    public static void deleteTestDirectory(String dirName) throws IOException {
+    public static void deleteTestDirectory(Path dirName) throws IOException {
         System.out.println("Delete test directory if exists");
-        FileUtils.deleteDirectory(Paths.get(dirName).toFile());
+        FileUtils.deleteDirectory(dirName.toFile());
     }
 
     /**
@@ -107,7 +107,7 @@ public class TestDirectoryManager {
      * @param content Content added into the file
      * @throws IOException Input or Output error during creating of the file
      */
-    private static void createFile(Path path, String content) throws IOException {
+    private static void createFileWithContent(Path path, String content) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path.toString()), StandardCharsets.UTF_8);
         writer.write(content);
         writer.flush();

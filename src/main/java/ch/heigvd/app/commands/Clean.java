@@ -1,4 +1,4 @@
-package ch.heigvd.app;
+package ch.heigvd.app.commands;
 
 import org.apache.commons.io.FileUtils;
 import picocli.CommandLine;

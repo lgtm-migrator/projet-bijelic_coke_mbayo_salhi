@@ -1,5 +1,6 @@
 package ch.heigvd.app.utils;
 
+import ch.heigvd.app.utils.parsers.MarkdownConverter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

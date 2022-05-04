@@ -43,8 +43,6 @@ public class Serve implements Callable<Integer> {
             TimeUnit.SECONDS.sleep(5);
         }
 
-
-
         return 0;
     }
 }

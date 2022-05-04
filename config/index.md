@@ -1,6 +1,8 @@
-titre: Titre
-auteur: Prenom Nom
-date: 2022-03-29
+{
+"title" : "Title",
+"author" : "Name",
+"date" : "2022-03-29"
+}
 ---
 # Titre de page
 ## Sous titre de page

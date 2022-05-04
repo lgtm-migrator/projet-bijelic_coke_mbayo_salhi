@@ -1,5 +1,7 @@
 package ch.heigvd.app.utils;
 
+import ch.heigvd.app.utils.parsers.SiteConfig;
+import ch.heigvd.app.utils.parsers.JsonConverter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -11,17 +13,17 @@ public class JsonConverterTest {
 
     @Test
     public void parserShouldParseJsonStringCorrectly() {
-        JavaConfig result = new JavaConfig("titre", "fr", "utf-8");
+        SiteConfig result = new SiteConfig("titre", "fr", "utf-8");
         String input = "{\n" +
                 "  \"title\" : \"titre\",\n" +
                 "  \"lang\" : \"fr\",\n" +
                 "  \"charset\" : \"utf-8\"\n" +
                 "}";
-        JavaConfig output = JsonConverter.convert(input);
+        SiteConfig output = JsonConverter.convert(input);
 
-        assertEquals(result.title , output.title);
-        assertEquals(result.lang, output.lang);
-        assertEquals(result.charset, output.charset);
+        assertEquals(result.getTitle() , output.getTitle());
+        assertEquals(result.getLang(), output.getLang());
+        assertEquals(result.getCharset(), output.getCharset());
     }
 
 }

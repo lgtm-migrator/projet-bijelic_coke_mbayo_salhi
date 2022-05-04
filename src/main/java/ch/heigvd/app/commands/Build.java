@@ -1,14 +1,14 @@
-package ch.heigvd.app;
+package ch.heigvd.app.commands;
 
 import picocli.CommandLine.Command;
 
 import java.util.concurrent.Callable;
 
-@Command(name = "new")
-public class New implements Callable<Integer> {
+@Command(name = "build")
+public class Build implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
-        System.out.println("New");
+        System.out.println("Build");
         return 0;
     }
 }

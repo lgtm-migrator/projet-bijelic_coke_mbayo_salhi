@@ -1,4 +1,4 @@
-package ch.heigvd.app;
+package ch.heigvd.app.commands;
 
 import io.javalin.plugin.rendering.FileRenderer;
 import picocli.CommandLine;

@@ -12,15 +12,23 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
+
 
 public class BuildTest {
 
     private final Path dirPath = Paths.get("montest");
     private final Path websitePath = dirPath.resolve("sitetest");
 
+
+    /**
+     * Create test directory with files
+     */
     @Before
+
     public void createBasicFolderForTesting(){
         deleteTestDirectory();
 
@@ -72,6 +80,10 @@ public class BuildTest {
         }
     }
 
+    /**
+     * Check if right files and folders are moved to build directory
+     * @throws IOException Error if file could not be found
+     */
     @Test
     public void statiqueBuildShouldCopyRightFilesAndConvertMarkdownToHTML() throws IOException {
         String pageHTMLContent = "<h1>Ma première page</h1>\n";
@@ -86,10 +98,12 @@ public class BuildTest {
         CommandLine cmd = new CommandLine(app);
         cmd.setOut(new PrintWriter(sw));
 
+
         int exitCode = cmd.execute("build", websitePath.toString());
         assertEquals(0, exitCode);
 
         Path buildPath = websitePath.resolve("build");
+
         assertTrue("Build folder could not be created", Files.exists(buildPath));
 
         Path dossierPath = buildPath.resolve("dossier");
@@ -121,7 +135,6 @@ public class BuildTest {
         System.out.println("Delete test directory if exists");
         try{
             FileUtils.deleteDirectory(dirPath.toFile());
-
 
         } catch (IOException e) {
             System.err.println("Error while deleting test directory " + e.getMessage());

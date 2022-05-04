@@ -12,9 +12,9 @@ public class JsonConverter {
      * @return the java object
      * @see <a href="https://github.com/google/gson">gson</a>
      */
-    public static JavaConfig convert(String input){
+    public static SiteConfig convert(String input){
         Gson gson = new Gson();
-        JavaConfig javaConf = gson.fromJson(input, JavaConfig.class);
+        SiteConfig javaConf = gson.fromJson(input, SiteConfig.class);
 
         return javaConf;
     }
@@ -32,25 +32,3 @@ public class JsonConverter {
         return javaConf;
     }
 }
-
-/**
- * Mimics the config.json structure in order map its data
- * into a java object.
- */
-/*class JavaConfig {
-    /**
-     * Constructor for test purpose
-     * @param title a title
-     * @param lang a language (ex: fr)
-     * @param charset a charset (ex: utf-8)
-     */
-    /*public JavaConfig(String title, String lang, String charset){
-        this.title = title;
-        this.lang = lang;
-        this.charset = charset;
-    }
-    String title;
-    String lang;
-    String charset;
-}*/
-

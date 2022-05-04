@@ -4,7 +4,7 @@ package ch.heigvd.app.utils.parsers;
  * Mimics the config.json structure in order map its data
  * into a java object.
  */
-public class JavaConfig {
+public class SiteConfig {
     private final String title;
     private final String lang;
     private final String charset;
@@ -16,7 +16,7 @@ public class JavaConfig {
      * @param lang    a language (ex: fr)
      * @param charset a charset (ex: utf-8)
      */
-    public JavaConfig(String title, String lang, String charset) {
+    public SiteConfig(String title, String lang, String charset) {
         this.title = title;
         this.lang = lang;
         this.charset = charset;

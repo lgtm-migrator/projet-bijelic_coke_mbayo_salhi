@@ -1,5 +1,8 @@
 package ch.heigvd.app.utils.parsers;
 
+/**
+ * Config structure for pages
+ */
 public class PageConfig {
 
     private final String title;
@@ -19,14 +22,26 @@ public class PageConfig {
         this.date = date;
     }
 
+    /**
+     * Get page config title
+     * @return Page config title
+     */
     public String getTitle(){
         return title;
     }
 
+    /**
+     * Get page config author
+     * @return Page config author
+     */
     public String getAuthor(){
         return author;
     }
 
+    /**
+     * Get page config date
+     * @return Page config date
+     */
     public String getDate(){
         return date;
     }

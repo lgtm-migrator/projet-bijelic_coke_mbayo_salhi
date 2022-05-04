@@ -21,6 +21,7 @@ public class Build implements Callable<Integer> {
 
     final private String BUILD_DIRECTORY_NAME = "build";
     final private String MARKDOWN_FILE_TYPE = "md";
+    final private Set<String> DIRECTORIES_TO_EXCLUDE = Set.of("build", "template");
     final private Set<String> FILE_TYPE_TO_EXCLUDE = Set.of("yaml");
 
     @Override
@@ -60,7 +61,7 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                if(!dir.startsWith(sourcePath + "build")){
+                if(!dir.startsWith(sourcePath + "\\build") && !dir.startsWith(sourcePath + "\\template")){
                     Path destinationPath = destination.resolve(source.relativize(dir));
                     Files.createDirectory(destinationPath);
                     System.out.println("Directory " + dir + " successfully created");

@@ -22,9 +22,7 @@ public class TestDirectoryManager {
      * @param websiteName Test website name
      * @throws IOException Error during creation or deletion of files
      */
-    public static void createBasicFolderForTesting(Path dirName, String websiteName) throws IOException {
-        deleteTestDirectory(dirName);
-
+    public static void createBasicTestDirectory(Path dirName, String websiteName) throws IOException {
         String indexMdContent = "titre: Mon premier article\n" +
                 "auteur: Bertil Chapuis\n" +
                 "date: 2021-03-10\n" +
@@ -42,18 +40,23 @@ public class TestDirectoryManager {
 
         String configYaml = "title: Mon site internet";
 
-        Path dossierPath = Paths.get(websiteName + "/dossier/");
+        //Files.createDirectories(dirName);
+        System.out.println("Directory " + dirName + " is created!");
+
+        Path websitePath = Paths.get(dirName + "/" + websiteName);
+
+        Path dossierPath = Paths.get(websitePath + "/dossier/");
         Files.createDirectories(dossierPath);
         System.out.println("Directory " + dossierPath + " is created!");
 
-        createFileWithContent(Paths.get(websiteName + "/dossier/page.md"), pageMdContent);
+        createFileWithContent(Paths.get(websitePath + "/dossier/page.md"), pageMdContent);
 
         Path imagePath = Paths.get(dossierPath + "/image.png");
         Files.createFile(imagePath);
 
-        createFileWithContent(Paths.get(websiteName + "/index.md"), indexMdContent);
+        createFileWithContent(Paths.get(websitePath + "/index.md"), indexMdContent);
 
-        createFileWithContent(Paths.get(websiteName + "/config.yaml"), configYaml);
+        createFileWithContent(Paths.get(websitePath + "/config.yaml"), configYaml);
     }
 
     /**
@@ -63,11 +66,20 @@ public class TestDirectoryManager {
      * @throws IOException Error during creation or deletion of files
      */
     public static void createTemplateTestDirectory(Path dirName, String websiteName) throws IOException {
-        createBasicFolderForTesting(dirName, websiteName);
+        createBasicTestDirectory(dirName, websiteName);
 
-        Path templatePath = Paths.get(websiteName + "/template/");
+        Path templatePath = Paths.get(dirName + "/" + websiteName + "/template/");
         Files.createDirectory(templatePath);
         System.out.println("Directory " + templatePath + " is created!");
+
+        String pageMdContent = "titre: Mon premier article\n" +
+                "auteur: Bertil Chapuis\n" +
+                "date: 2021-03-10\n" +
+                "---\n" +
+                "# Mon titre\n" +
+                "## Mon sous-titre\n" +
+                "Le contenu de mon article.\n" +
+                "![Une image](./image.png)";
 
         String layoutHtmlContent = "<html lang=\"en\">\n" +
                                     "<head>\n" +
@@ -78,12 +90,15 @@ public class TestDirectoryManager {
                                         "{{> menu }}\n" +
                                         "{{ content }}\n" +
                                     "</body>\n" +
-                                    "</html>";
+                                    "</html>\n";
 
         String menuHtmlContent = "<ul>\n" +
                                     "<li><a href=\"/index.html\">home</a></li>\n" +
                                     "<li><a href=\"/content/page.html\">page</a></li>\n" +
                                  "</ul>";
+
+        // Rewrite page.md file as it is not the same as the basic website one
+        createFileWithContent(Paths.get(dirName + "/" + websiteName + "/dossier/page.md"), pageMdContent);
 
         createFileWithContent(Paths.get(templatePath + "/layout.html"), layoutHtmlContent);
 

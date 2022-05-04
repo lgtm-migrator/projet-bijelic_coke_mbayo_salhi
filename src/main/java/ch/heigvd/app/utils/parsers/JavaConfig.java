@@ -5,9 +5,9 @@ package ch.heigvd.app.utils.parsers;
  * into a java object.
  */
 public class JavaConfig {
-    private String title;
-    private String lang;
-    private String charset;
+    private final String title;
+    private final String lang;
+    private final String charset;
 
     /**
      * Constructor for test purpose

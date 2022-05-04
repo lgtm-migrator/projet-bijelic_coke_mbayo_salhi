@@ -37,14 +37,14 @@ public class JsonConverter {
  * Mimics the config.json structure in order map its data
  * into a java object.
  */
-class JavaConfig {
+/*class JavaConfig {
     /**
      * Constructor for test purpose
      * @param title a title
      * @param lang a language (ex: fr)
      * @param charset a charset (ex: utf-8)
      */
-    public JavaConfig(String title, String lang, String charset){
+    /*public JavaConfig(String title, String lang, String charset){
         this.title = title;
         this.lang = lang;
         this.charset = charset;
@@ -52,21 +52,5 @@ class JavaConfig {
     String title;
     String lang;
     String charset;
-}
+}*/
 
-class PageConfig {
-    /**
-     * Constructor for test purpose
-     * @param title a title
-     * @param author name
-     * @param date the date
-     */
-    public PageConfig(String title, String author, String date){
-        this.title = title;
-        this.author = author;
-        this.date = date;
-    }
-    String title;
-    String author;
-    String date;
-}

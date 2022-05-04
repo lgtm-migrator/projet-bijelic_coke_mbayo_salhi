@@ -37,9 +37,9 @@ public class JsonConverterTest {
                 "}";
         PageConfig output = JsonConverter.pageConvert(input);
 
-        assertEquals(result.title , output.title);
-        assertEquals(result.author, output.author);
-        assertEquals(result.date, output.date);
+        assertEquals(result.getTitle() , output.getTitle());
+        assertEquals(result.getAuthor(), output.getAuthor());
+        assertEquals(result.getDate(), output.getDate());
     }
 
 }

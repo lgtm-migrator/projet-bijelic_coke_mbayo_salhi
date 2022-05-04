@@ -1,4 +1,4 @@
-package ch.heigvd.app.utils;
+package ch.heigvd.app.utils.parsers;
 
 import com.google.gson.Gson;
 

@@ -1,5 +1,8 @@
 package ch.heigvd.app.utils;
 
+import ch.heigvd.app.utils.parsers.JavaConfig;
+import ch.heigvd.app.utils.parsers.JsonConverter;
+import ch.heigvd.app.utils.parsers.PageConfig;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

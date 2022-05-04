@@ -1,7 +1,6 @@
-package ch.heigvd.app;
+package ch.heigvd.app.commands;
 
-import ch.heigvd.app.utils.MarkdownConverter;
-import com.ibm.icu.impl.ICULocaleService;
+import ch.heigvd.app.utils.parsers.MarkdownConverter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;

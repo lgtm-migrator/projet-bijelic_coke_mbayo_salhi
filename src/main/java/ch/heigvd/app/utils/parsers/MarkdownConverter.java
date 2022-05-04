@@ -1,4 +1,4 @@
-package ch.heigvd.app.utils;
+package ch.heigvd.app.utils.parsers;
 
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.html.HtmlRenderer;

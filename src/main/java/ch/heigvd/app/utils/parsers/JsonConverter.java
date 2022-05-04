@@ -18,17 +18,4 @@ public class JsonConverter {
 
         return javaConf;
     }
-
-    /**
-     * Convert a json string into a java object
-     * @param input the json string
-     * @return the java object
-     * @see <a href="https://github.com/google/gson">gson</a>
-     */
-    public static PageConfig pageConvert(String input){
-        Gson gson = new Gson();
-        PageConfig javaConf = gson.fromJson(input, PageConfig.class);
-
-        return javaConf;
-    }
 }

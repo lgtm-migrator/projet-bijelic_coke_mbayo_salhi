@@ -1,6 +1,7 @@
 package ch.heigvd.app.commands;
 
 import ch.heigvd.app.utils.parsers.MarkdownConverter;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
@@ -65,11 +66,14 @@ class Layout{
     }
 }
 
-
 @Command(name = "build")
 public class Build implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Path to build " + "directory")
+
     private Path sourcePath;
+
+    private Layout layout = null;
+
 
     final private String BUILD_DIRECTORY_NAME = "build";
     final private String MARKDOWN_FILE_TYPE = "md";
@@ -114,9 +118,27 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+
                 if(!dir.startsWith(destination)){
                 //if(!dir.startsWith(sourcePath + "\\build") && !dir
                     // .startsWith(sourcePath + "\\template")){
+
+/*                if(dir.startsWith(sourcePath + "\\template")){
+                    HashMap<String, String> map = new HashMap<>();
+
+                    Path configPath = Paths.get(sourcePath + "\\config.json");
+                    JavaConfig config = JsonConverter.convert(configPath.toString());
+
+                    map.put("title", config.getTitle());
+                    map.put("lang", config.getLang());
+                    map.put("charset", config.getCharset());
+
+                    Path layoutPath = Paths.get(sourcePath + "\\template\\layout.html");
+                    String layoutContent = Files.readString(layoutPath);
+
+                    layout = new Layout(map, layoutContent);
+                }
+                else if(!dir.startsWith(sourcePath + "\\build")){*/
 
                     Path destinationPath = destination.resolve(source.relativize(dir));
                     Files.createDirectory(destinationPath);

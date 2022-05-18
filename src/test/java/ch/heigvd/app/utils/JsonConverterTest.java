@@ -19,9 +19,9 @@ public class JsonConverterTest {
                 "}";
         JavaConfig output = JsonConverter.convert(input);
 
-        assertEquals(result.title , output.title);
-        assertEquals(result.lang, output.lang);
-        assertEquals(result.charset, output.charset);
+        assertEquals(result.getTitle() , output.getTitle());
+        assertEquals(result.getLang(), output.getLang());
+        assertEquals(result.getCharset(), output.getCharset());
     }
 
 }

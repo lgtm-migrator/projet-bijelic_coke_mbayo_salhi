@@ -73,7 +73,7 @@ public class BuildTest {
         Path pagePath = Paths.get(dossierPath + "/page.html");
         assertTrue("Page.html file could not be created", Files.exists(pagePath));
 
-        Path configPath = Paths.get(buildPath + "/config.yaml");
+        Path configPath = Paths.get(buildPath + "/config.json");
         assertFalse("Config file should not be copied", Files.exists(configPath));
 
         Path indexPath = Paths.get(buildPath + "/index.html");
@@ -133,7 +133,7 @@ public class BuildTest {
         Path pagePath = Paths.get(dossierPath + "/page.html");
         assertTrue("Page.html file could not be created", Files.exists(pagePath));
 
-        Path configPath = Paths.get(buildPath + "/config.yaml");
+        Path configPath = Paths.get(buildPath + "/config.json");
         assertFalse("Config file should not be copied", Files.exists(configPath));
 
         Path indexPath = Paths.get(buildPath + "/index.html");

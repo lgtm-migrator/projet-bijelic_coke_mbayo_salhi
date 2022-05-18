@@ -12,10 +12,16 @@ public class JsonConverter {
      * @return the java object
      * @see <a href="https://github.com/google/gson">gson</a>
      */
-    public static JavaConfig convert(String input){
+    public static JavaConfig convertSite(String input){
         Gson gson = new Gson();
 
         return gson.fromJson(input, JavaConfig.class);
+    }
+
+    public static PageConfig convertPage(String input){
+        Gson gson = new Gson();
+
+        return gson.fromJson(input, PageConfig.class);
     }
 }
 

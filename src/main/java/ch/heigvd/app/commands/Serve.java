@@ -39,9 +39,9 @@ public class Serve implements Callable<Integer> {
         }));
 
         // run until server shutdown (may be a better option there)
-        while(running.get()){
+        //while(running.get()){
             TimeUnit.SECONDS.sleep(5);
-        }
+        //}
 
         return 0;
     }

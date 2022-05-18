@@ -119,17 +119,23 @@ public class Build implements Callable<Integer> {
                 if(dir.startsWith(sourcePath + "\\template")){
                     HashMap<String, String> map = new HashMap<>();
 
-                    Path configPath = Paths.get(sourcePath + "\\config.json");
-                    JavaConfig config = JsonConverter.convert(configPath.toString());
+                    // Get values from config file and create Layout
+                    try {
+                        Path configPath = Paths.get(sourcePath + "\\config.json");
+                        JavaConfig config = JsonConverter.convert(configPath.toString());
 
-                    map.put("title", config.getTitle());
-                    map.put("lang", config.getLang());
-                    map.put("charset", config.getCharset());
+                        map.put("title", config.getTitle());
+                        map.put("lang", config.getLang());
+                        map.put("charset", config.getCharset());
 
-                    Path layoutPath = Paths.get(sourcePath + "\\template\\layout.html");
-                    String layoutContent = Files.readString(layoutPath);
+                        Path layoutPath = Paths.get(sourcePath + "\\template\\layout.html");
+                        String layoutContent = Files.readString(layoutPath);
 
-                    layout = new Layout(map, layoutContent);
+                        layout = new Layout(map, layoutContent);
+                    } catch (Exception e) {
+                        System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
+                        return FileVisitResult.TERMINATE;
+                    }
                 }
                 else if(!dir.startsWith(sourcePath + "\\build")){
                     Path destinationPath = destination.resolve(source.relativize(dir));

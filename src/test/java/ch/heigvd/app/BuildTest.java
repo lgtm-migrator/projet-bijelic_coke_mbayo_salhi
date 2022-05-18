@@ -15,8 +15,8 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class BuildTest {
-    private final String dirName = "monTEST/";
-    private final String websiteName = dirName + "siteTEST/";
+    private final Path dirPath = Paths.get("montest");
+    private final Path websitePath = dirPath.resolve("sitetest");
 
     @Before
     public void createBasicFolderForTesting(){
@@ -40,26 +40,26 @@ public class BuildTest {
         String configYaml = "title: Mon site internet";
 
         try{
-            Path dossierPath = Paths.get(websiteName + "dossier/");
+            Path dossierPath = websitePath.resolve("dossier");
             Files.createDirectories(dossierPath);
             System.out.println("Directory " + dossierPath + " is created!");
 
-            OutputStreamWriter pageWriter = new OutputStreamWriter(new FileOutputStream(dossierPath + "/page.md"), StandardCharsets.UTF_8);
+            OutputStreamWriter pageWriter = new OutputStreamWriter(new FileOutputStream(dossierPath.resolve("page.md").toString()), StandardCharsets.UTF_8);
             pageWriter.write(pageMdContent);
             pageWriter.flush();
             pageWriter.close();
             System.out.println("File dossier/page.md is created and its content added!");
 
-            Path imagePath = Paths.get(dossierPath + "/image.png");
+            Path imagePath = dossierPath.resolve("image.png");
             Files.createFile(imagePath);
 
-            OutputStreamWriter indexWriter = new OutputStreamWriter(new FileOutputStream(websiteName + "/index.md"), StandardCharsets.UTF_8);
+            OutputStreamWriter indexWriter = new OutputStreamWriter(new FileOutputStream(websitePath.resolve("index.md").toString()), StandardCharsets.UTF_8);
             indexWriter.write(indexMdContent);
             indexWriter.flush();
             indexWriter.close();
             System.out.println("File index.md is created and its content added!");
 
-            OutputStreamWriter configWriter = new OutputStreamWriter(new FileOutputStream(websiteName + "/config.yaml"), StandardCharsets.UTF_8);
+            OutputStreamWriter configWriter = new OutputStreamWriter(new FileOutputStream(websitePath.resolve("config.yaml").toString()), StandardCharsets.UTF_8);
             configWriter.write(configYaml);
             configWriter.flush();
             configWriter.close();
@@ -84,27 +84,25 @@ public class BuildTest {
         CommandLine cmd = new CommandLine(app);
         cmd.setOut(new PrintWriter(sw));
 
-        String testPath = websiteName;
-
-        int exitCode = cmd.execute("build", testPath);
+        int exitCode = cmd.execute("build", websitePath.toString());
         assertEquals(0, exitCode);
 
-        Path buildPath = Paths.get(testPath + "/build");
+        Path buildPath = websitePath.resolve("build");
         assertTrue("Build folder could not be created", Files.exists(buildPath));
 
-        Path dossierPath = Paths.get(buildPath + "/dossier");
+        Path dossierPath = buildPath.resolve("dossier");
         assertTrue("Dossier folder could not be created", Files.exists(dossierPath));
 
-        Path imagePath = Paths.get(dossierPath + "/image.png");
+        Path imagePath = dossierPath.resolve("image.png");
         assertTrue("Image file could not be copied", Files.exists(imagePath));
 
-        Path pagePath = Paths.get(dossierPath + "/page.html");
+        Path pagePath = dossierPath.resolve("page.html");
         assertTrue("Page.html file could not be created", Files.exists(pagePath));
 
-        Path configPath = Paths.get(buildPath + "/config.yaml");
+        Path configPath = buildPath.resolve("config.yaml");
         assertFalse("Config file should not be copied", Files.exists(configPath));
 
-        Path indexPath = Paths.get(buildPath + "/index.html");
+        Path indexPath = buildPath.resolve("index.html");
         assertTrue("Index.html file could not be created", Files.exists(indexPath));
 
         assertEquals("Page.html content is not as expected!", pageHTMLContent,
@@ -116,11 +114,11 @@ public class BuildTest {
                 );
     }
 
-    @After
+
     public void deleteTestDirectory() {
         System.out.println("Delete test directory if exists");
         try{
-            FileUtils.deleteDirectory(Paths.get(dirName).toFile());
+            FileUtils.deleteDirectory(dirPath.toFile());
         } catch (IOException e) {
             e.printStackTrace();
         }

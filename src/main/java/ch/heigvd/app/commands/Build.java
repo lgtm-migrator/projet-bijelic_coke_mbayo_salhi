@@ -10,8 +10,61 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+/**
+ * Represent the layout that is applied to all HTML pages
+ */
+class Layout{
+    HashMap<String, String> siteMetaData;
+    String layoutHtmlContent;
+
+    /**
+     * Layout constructor
+     * @param siteMetaData Map of the site metadata
+     * @param layoutHtmlContent HTML layout content of the website
+     */
+    Layout(HashMap<String, String> siteMetaData, String layoutHtmlContent){
+        if(siteMetaData.isEmpty())
+            throw new IllegalArgumentException("Site metadatas is empty!");
+        if(layoutHtmlContent.isEmpty())
+            throw new IllegalArgumentException("No layout given!");
+        this.siteMetaData = new HashMap<>(copyMap(siteMetaData));
+    }
+
+    /**
+     * Get content of the layout
+     * @return Content of the layout
+     */
+    protected String getLayoutHtmlContent(){
+        return layoutHtmlContent;
+    }
+
+    /**
+     * Get the site metdata map
+     * @return Site metadata map
+     */
+    protected Map<String, String> getSiteMetaData(){
+        return copyMap(this.siteMetaData);
+    }
+
+    /**
+     * Copy map into a new one
+     * @param originalMap Original map to copy from
+     * @return Map where datas are copied in
+     */
+    private Map<String, String> copyMap(Map<String, String> originalMap){
+        Map<String, String> copy = new HashMap<>();
+        for(String key : originalMap.keySet()){
+            copy.put(key, originalMap.get(key));
+        }
+        return copy;
+    }
+}
+
 
 @Command(name = "build")
 public class Build implements Callable<Integer> {

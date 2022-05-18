@@ -15,7 +15,9 @@ public class JsonConverter {
      * @return the java object
      * @see <a href="https://github.com/google/gson">gson</a>
      */
+
     public static SiteConfig convertSite(String input){
+
         Gson gson = new Gson();
 
         return gson.fromJson(input, SiteConfig.class);
@@ -26,5 +28,6 @@ public class JsonConverter {
 
         return gson.fromJson(input, PageConfig.class);
     }
+
 }
 

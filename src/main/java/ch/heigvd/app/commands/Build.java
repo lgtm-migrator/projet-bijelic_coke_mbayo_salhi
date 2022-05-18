@@ -1,6 +1,8 @@
 package ch.heigvd.app.commands;
 
 import ch.heigvd.app.utils.parsers.MarkdownConverter;
+import ch.heigvd.app.utils.JsonConverter;
+import ch.heigvd.app.utils.parsers.PageConfig;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -97,7 +99,7 @@ public class Build implements Callable<Integer> {
             HashMap<String, String> map = new HashMap<>();
 
             Path configPath = Paths.get(sourcePath + "\\config.json");
-            JavaConfig config = JsonConverter.convert(configPath.toString());
+            JavaConfig config = JsonConverter.convertSite(configPath.toString());
 
             map.put("title", config.getTitle());
             map.put("lang", config.getLang());
@@ -110,8 +112,10 @@ public class Build implements Callable<Integer> {
 
             copyFiles(sourcePath, sourcePath + "/" + BUILD_DIRECTORY_NAME);
         } catch (Exception e) {
+
             System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
         }*/
+
 
         return 0;
     }
@@ -192,6 +196,8 @@ public class Build implements Callable<Integer> {
                 if(!FILE_TYPE_TO_EXCLUDE.contains(fileExtension)){
                     if(fileExtension.equals(MARKDOWN_FILE_TYPE)){
                         StringBuilder htmlContent = new StringBuilder();
+                        StringBuilder pageConfigContent = new StringBuilder();
+                        PageConfig pageConfig = null;
 
                         try (FileInputStream fis = new FileInputStream(file.toString());
                              InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
@@ -203,9 +209,14 @@ public class Build implements Callable<Integer> {
                                 if(startToCopy){
                                     htmlContent.append(MarkdownConverter.convert(str));
                                 }
-                                // Ignore markdown file header and start copying markdown from specific line
-                                if(str.equals("---"))
+                                else{
+                                    pageConfigContent.append(str);
+                                }
+                                // Copy markdown file header to a PageConfig and start copying markdown from specific line
+                                if(str.equals("---")){
+                                    pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
                                     startToCopy = true;
+                                }
                             }
                         } catch (IOException e) {
                             System.err.println("Error while reading markdown file");

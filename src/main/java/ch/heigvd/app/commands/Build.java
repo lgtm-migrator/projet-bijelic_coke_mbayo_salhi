@@ -86,11 +86,32 @@ public class Build implements Callable<Integer> {
 
         System.out.println("Building in : " + sourcePath);
 
+
         Path buildPath = sourcePath.resolve(BUILD_DIRECTORY_NAME);
 
         System.out.println("buildPath = " + buildPath);
 
         copyFiles(sourcePath, buildPath);
+        // Get values from config file and create Layout
+/*        try {
+            HashMap<String, String> map = new HashMap<>();
+
+            Path configPath = Paths.get(sourcePath + "\\config.json");
+            JavaConfig config = JsonConverter.convert(configPath.toString());
+
+            map.put("title", config.getTitle());
+            map.put("lang", config.getLang());
+            map.put("charset", config.getCharset());
+
+            Path layoutPath = Paths.get(sourcePath + "\\template\\layout.html");
+            String layoutContent = Files.readString(layoutPath);
+
+            layout = new Layout(map, layoutContent);
+
+            copyFiles(sourcePath, sourcePath + "/" + BUILD_DIRECTORY_NAME);
+        } catch (Exception e) {
+            System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
+        }*/
 
         return 0;
     }
@@ -119,6 +140,7 @@ public class Build implements Callable<Integer> {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 
+
                 if(!dir.startsWith(destination)){
                 //if(!dir.startsWith(sourcePath + "\\build") && !dir
                     // .startsWith(sourcePath + "\\template")){
@@ -146,6 +168,8 @@ public class Build implements Callable<Integer> {
                 }
                 else if(!dir.startsWith(sourcePath + "\\build")){*/
 
+                //if(!dir.startsWith(sourcePath + "\\build") || !dir
+                    // .startsWith(sourcePath + "\\template")){
                     Path destinationPath = destination.resolve(source.relativize(dir));
                     Files.createDirectory(destinationPath);
                     System.out.println("Directory " + destinationPath + " successfully created");

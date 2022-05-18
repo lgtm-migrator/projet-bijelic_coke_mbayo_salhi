@@ -60,7 +60,7 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                if(!dir.equals(destination)){
+                if(!dir.startsWith(destination)){
                     Path destinationPath = destination.resolve(source.relativize(dir));
                     Files.createDirectory(destinationPath);
                     System.out.println("Directory " + destinationPath + " successfully created");
@@ -116,8 +116,12 @@ public class Build implements Callable<Integer> {
                         System.out.println("File " + htmlFile + " successfully created");
                     }
                     else {
-                        Files.copy(file, destination.resolve(source.relativize(file)), options);
-                        System.out.println("File " + file + " successfully copied");
+                        System.out.println(source.relativize(file));
+                        System.out.println(destination.resolve(source.relativize(file)));
+                        if(!file.startsWith(destination)) {
+                            Files.copy(file, destination.resolve(source.relativize(file)), options);
+                            System.out.println("File " + file + " successfully copied");
+                        }
                     }
                 }
                 return FileVisitResult.CONTINUE;

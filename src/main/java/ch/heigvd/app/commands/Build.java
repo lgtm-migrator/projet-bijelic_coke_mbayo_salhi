@@ -116,6 +116,7 @@ public class Build implements Callable<Integer> {
                         System.out.println("File " + htmlFile + " successfully created");
                     }
                     else {
+                        // Bug fix Linux
                         if(!file.startsWith(destination)) {
                             Files.copy(file, destination.resolve(source.relativize(file)), options);
                             System.out.println("File " + file + " successfully copied");

@@ -216,7 +216,9 @@ public class Build implements Callable<Integer> {
                                 }
                                 // Copy markdown file header to a PageConfig and start copying markdown from specific line
                                 if(str.equals("---")){
+                                    /*
                                     pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
+                                    */
                                     startToCopy = true;
                                 }
                             }

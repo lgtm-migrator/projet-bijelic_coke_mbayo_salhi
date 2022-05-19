@@ -1,4 +1,5 @@
-package ch.heigvd.app.utils;
+package ch.heigvd.app.utils.parsers;
+
 
 /**
  * Config structure for pages

@@ -1,10 +1,11 @@
-package ch.heigvd.app;
+package ch.heigvd.app.commands;
 
-import ch.heigvd.app.utils.JavaConfig;
-import ch.heigvd.app.utils.JsonConverter;
-import ch.heigvd.app.utils.MarkdownConverter;
-import ch.heigvd.app.utils.PageConfig;
-import com.ibm.icu.impl.ICULocaleService;
+
+
+
+
+import ch.heigvd.app.utils.parsers.JsonConverter;
+import ch.heigvd.app.utils.parsers.PageConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
@@ -72,8 +73,11 @@ class Layout{
 @Command(name = "build")
 public class Build implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Path to build " + "directory")
-    private String sourcePath;
+
+    private Path sourcePath;
+
     private Layout layout = null;
+
 
     final private String BUILD_DIRECTORY_NAME = "build";
     final private String MARKDOWN_FILE_TYPE = "md";
@@ -86,12 +90,18 @@ public class Build implements Callable<Integer> {
 
         System.out.println("Building in : " + sourcePath);
 
+
+        Path buildPath = sourcePath.resolve(BUILD_DIRECTORY_NAME);
+
+        System.out.println("buildPath = " + buildPath);
+
+        copyFiles(sourcePath, buildPath);
         // Get values from config file and create Layout
-        try {
+/*        try {
             HashMap<String, String> map = new HashMap<>();
 
             Path configPath = Paths.get(sourcePath + "\\config.json");
-            JavaConfig config = JsonConverter.convertSite(configPath.toString());
+            ch.heigvd.app.utils.parser.SiteConfig config = JsonConverter.convertSite(configPath.toString());
 
             map.put("title", config.getTitle());
             map.put("lang", config.getLang());
@@ -104,21 +114,20 @@ public class Build implements Callable<Integer> {
 
             copyFiles(sourcePath, sourcePath + "/" + BUILD_DIRECTORY_NAME);
         } catch (Exception e) {
-            System.err.println("An error was encounter during the creation of the template layout: " + e.getMessage());
-        }
+
+            System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
+        }*/
+
 
         return 0;
     }
 
     /**
      * Recursive directory copiing with parsing for certain files
-     * @param sourcePath Directory where files are located
-     * @param buildPath Directory where files are being copied to
+     * @param source Directory where files are located
+     * @param destination Directory where files are being copied to
      */
-    private void copyFiles(String sourcePath, String buildPath, CopyOption... options) throws IOException {
-        Path source = Paths.get(sourcePath);
-        Path destination = Paths.get(buildPath);
-
+    private void copyFiles(Path source, Path destination, CopyOption... options) throws IOException {
         if(Files.exists(destination)) {
             System.out.println("Directory build already exists. It will be deleted");
             FileUtils.deleteDirectory(destination.toFile());
@@ -136,7 +145,37 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                if(!dir.startsWith(sourcePath + "\\build") || !dir.startsWith(sourcePath + "\\template")){
+
+
+                if(!dir.startsWith(destination)){
+                //if(!dir.startsWith(sourcePath + "\\build") && !dir
+                    // .startsWith(sourcePath + "\\template")){
+
+/*                if(dir.startsWith(sourcePath + "\\template")){
+                    HashMap<String, String> map = new HashMap<>();
+
+                    // Get values from config file and create Layout
+                    try {
+                        Path configPath = Paths.get(sourcePath + "\\config.json");
+                        JavaConfig config = JsonConverter.convert(configPath.toString());
+
+                        map.put("title", config.getTitle());
+                        map.put("lang", config.getLang());
+                        map.put("charset", config.getCharset());
+
+                        Path layoutPath = Paths.get(sourcePath + "\\template\\layout.html");
+                        String layoutContent = Files.readString(layoutPath);
+
+                        layout = new Layout(map, layoutContent);
+                    } catch (Exception e) {
+                        System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
+                        return FileVisitResult.TERMINATE;
+                    }
+                }
+                else if(!dir.startsWith(sourcePath + "\\build")){*/
+
+                //if(!dir.startsWith(sourcePath + "\\build") || !dir
+                    // .startsWith(sourcePath + "\\template")){
                     Path destinationPath = destination.resolve(source.relativize(dir));
                     Files.createDirectory(destinationPath);
                     System.out.println("Directory " + destinationPath + " successfully created");
@@ -170,14 +209,16 @@ public class Build implements Callable<Integer> {
                             boolean startToCopy = false;
                             while ((str = reader.readLine()) != null) {
                                 if(startToCopy){
-                                    htmlContent.append(MarkdownConverter.convert(str));
+                                    htmlContent.append(ch.heigvd.app.utils.parsers.MarkdownConverter.convert(str));
                                 }
                                 else{
                                     pageConfigContent.append(str);
                                 }
                                 // Copy markdown file header to a PageConfig and start copying markdown from specific line
                                 if(str.equals("---")){
+                                    /*
                                     pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
+                                    */
                                     startToCopy = true;
                                 }
                             }
@@ -199,8 +240,11 @@ public class Build implements Callable<Integer> {
                         System.out.println("File " + htmlFile + " successfully created");
                     }
                     else {
-                        Files.copy(file, destination.resolve(source.relativize(file)), options);
-                        System.out.println("File " + file + " successfully copied");
+                        // Bug fix Linux
+                        if(!file.startsWith(destination)) {
+                            Files.copy(file, destination.resolve(source.relativize(file)), options);
+                            System.out.println("File " + file + " successfully copied");
+                        }
                     }
                 }
                 return FileVisitResult.CONTINUE;

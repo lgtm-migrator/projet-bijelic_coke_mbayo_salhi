@@ -139,7 +139,7 @@ public class Build implements Callable<Integer> {
                 if(!dir.startsWith(sourcePath + "\\build") || !dir.startsWith(sourcePath + "\\template")){
                     Path destinationPath = destination.resolve(source.relativize(dir));
                     Files.createDirectory(destinationPath);
-                    System.out.println("Directory " + dir + " successfully created");
+                    System.out.println("Directory " + destinationPath + " successfully created");
                 }
 
                 return FileVisitResult.CONTINUE;

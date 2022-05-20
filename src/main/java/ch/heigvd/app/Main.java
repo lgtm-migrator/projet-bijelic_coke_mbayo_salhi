@@ -12,7 +12,7 @@ import picocli.CommandLine.IVersionProvider;
         mixinStandardHelpOptions = true,
         description = "Generate random static websites",
         subcommands = {New.class, Clean.class, Build.class, Serve.class,
-                Init.class},
+                Init.class, Publish.class},
         versionProvider = Main.ManifestVersionProvider.class)
 public class Main implements Callable<Integer>
 {

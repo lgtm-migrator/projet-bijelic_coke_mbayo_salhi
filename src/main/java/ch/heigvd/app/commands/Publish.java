@@ -24,12 +24,12 @@ public class Publish implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
 
-        LOGGER.setLevel(Level.INFO);
+        LOGGER.setLevel(Level.WARNING);
         System.out.println("publishing config/ directory on GitHub");
 
         File localPath = new File(System.getProperty("user" + ".dir"));
 
-        System.out.println(localPath);
+        LOGGER.info(localPath.toString());
 
         Scanner scanner = new Scanner(System.in);  // Create a Scanner object
 
@@ -90,6 +90,7 @@ public class Publish implements Callable<Integer> {
         pushCommand.call();
 
         LOGGER.log(Level.INFO, "Push was successful");
+        System.out.println("publish done");
 
         return 0;
     }

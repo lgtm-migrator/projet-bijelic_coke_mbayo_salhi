@@ -1,6 +1,5 @@
 package ch.heigvd.app.utils.parsers;
 
-
 /**
  * Mimics the config.json structure in order map its data
  * into a java object.

@@ -116,6 +116,7 @@ public class BuildTest {
         assertTrue("Page.html file could not be created", Files.exists(pagePath));
 
         Path configPath = buildPath.resolve("config.yaml");
+
         assertFalse("Config file should not be copied", Files.exists(configPath));
 
         Path indexPath = buildPath.resolve("index.html");

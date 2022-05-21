@@ -1,11 +1,9 @@
 package ch.heigvd.app.commands;
 
-
-
-
-
-import ch.heigvd.app.utils.parsers.JsonConverter;
+import ch.heigvd.app.utils.parsers.MarkdownConverter;
+import ch.heigvd.app.utils.JsonConverter;
 import ch.heigvd.app.utils.parsers.PageConfig;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
@@ -101,7 +99,7 @@ public class Build implements Callable<Integer> {
             HashMap<String, String> map = new HashMap<>();
 
             Path configPath = Paths.get(sourcePath + "\\config.json");
-            ch.heigvd.app.utils.parser.SiteConfig config = JsonConverter.convertSite(configPath.toString());
+            JavaConfig config = JsonConverter.convertSite(configPath.toString());
 
             map.put("title", config.getTitle());
             map.put("lang", config.getLang());
@@ -209,16 +207,14 @@ public class Build implements Callable<Integer> {
                             boolean startToCopy = false;
                             while ((str = reader.readLine()) != null) {
                                 if(startToCopy){
-                                    htmlContent.append(ch.heigvd.app.utils.parsers.MarkdownConverter.convert(str));
+                                    htmlContent.append(MarkdownConverter.convert(str));
                                 }
                                 else{
                                     pageConfigContent.append(str);
                                 }
                                 // Copy markdown file header to a PageConfig and start copying markdown from specific line
                                 if(str.equals("---")){
-                                    /*
                                     pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
-                                    */
                                     startToCopy = true;
                                 }
                             }

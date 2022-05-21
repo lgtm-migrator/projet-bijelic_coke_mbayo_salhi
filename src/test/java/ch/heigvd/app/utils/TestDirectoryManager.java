@@ -38,7 +38,7 @@ public class TestDirectoryManager {
                 "---\n" +
                 "# Ma première page\n";
 
-        String configJson = "{\"title\": \"Mon site internet\"}";
+        String configYaml = "title: Mon site internet";
 
         //Files.createDirectories(dirName);
         System.out.println("Directory " + dirName + " is created!");
@@ -56,7 +56,7 @@ public class TestDirectoryManager {
 
         createFileWithContent(Paths.get(websitePath + "/index.md"), indexMdContent);
 
-        createFileWithContent(Paths.get(websitePath + "/config.json"), configJson);
+        createFileWithContent(Paths.get(websitePath + "/config.yaml"), configYaml);
     }
 
     /**

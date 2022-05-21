@@ -19,8 +19,7 @@ public class JsonConverterTest {
                 "  \"lang\" : \"fr\",\n" +
                 "  \"charset\" : \"utf-8\"\n" +
                 "}";
-
-        SiteConfig output = JsonConverter.convertSite(input);
+        SiteConfig output = JsonConverter.convert(input);
 
         assertEquals(result.getTitle() , output.getTitle());
         assertEquals(result.getLang(), output.getLang());

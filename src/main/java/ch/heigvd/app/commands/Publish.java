@@ -77,20 +77,25 @@ public class Publish implements Callable<Integer> {
         //String token2 = "ghp_xr7bpujomx3bvqpuyfdr04pywfdfdb2unsx2";
         //String httpUrl = "https://github.com/diltest/DIL-TEST.git";
 
-        git.add().addFilepattern("./build/").call();
-        LOGGER.log(Level.INFO, "Added build/ directory to stagging");
+        if(git != null) {
+            git.add().addFilepattern("./build/").call();
+            LOGGER.log(Level.INFO, "Added build/ directory to stagging");
 
-        git.commit().setMessage("static publish build directory").setSign(false).call();
+            git.commit().setMessage("static publish build directory").setSign(false).call();
 
-        // push to remote
-        PushCommand pushCommand = git.push();
+            // push to remote
+            PushCommand pushCommand = git.push();
 
-        pushCommand.setCredentialsProvider(new
-                UsernamePasswordCredentialsProvider(token, ""));
-        pushCommand.call();
+            pushCommand.setCredentialsProvider(new
+                    UsernamePasswordCredentialsProvider(token, ""));
+            pushCommand.call();
 
-        LOGGER.log(Level.INFO, "Push was successful");
-        System.out.println("publish done");
+            LOGGER.log(Level.INFO, "Push was successful");
+            System.out.println("publish done");
+        }
+        else {
+            LOGGER.log(Level.SEVERE, "Error: git variable null");
+        }
 
         return 0;
     }

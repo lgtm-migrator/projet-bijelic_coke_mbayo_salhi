@@ -11,11 +11,10 @@ import picocli.CommandLine.Command;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.concurrent.Callable;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Scanner;
 
 @Command(name = "publish")
 public class Publish implements Callable<Integer> {
@@ -38,7 +37,7 @@ public class Publish implements Callable<Integer> {
         Git git = null;
         try {
             git = Git.open(localPath);
-            LOGGER.info("Already a Git repository: " + localPath);;
+            LOGGER.info("Already a Git repository: " + localPath);
         } catch (RepositoryNotFoundException e) {
             LOGGER.info("Initialising " + localPath + " as a git repository");
             try {
@@ -72,12 +71,7 @@ public class Publish implements Callable<Integer> {
 
         String token = scanner.nextLine();  // Read user input
 
-        // test values with a test account on github
-        //String token = "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";
-        //String token2 = "ghp_xr7bpujomx3bvqpuyfdr04pywfdfdb2unsx2";
-        //String httpUrl = "https://github.com/diltest/DIL-TEST.git";
-
-        if(git != null) {
+        if (git != null) {
             git.add().addFilepattern("./build/").call();
             LOGGER.log(Level.INFO, "Added build/ directory to stagging");
 
@@ -92,8 +86,7 @@ public class Publish implements Callable<Integer> {
 
             LOGGER.log(Level.INFO, "Push was successful");
             System.out.println("publish done");
-        }
-        else {
+        } else {
             LOGGER.log(Level.SEVERE, "Error: git variable null");
         }
 

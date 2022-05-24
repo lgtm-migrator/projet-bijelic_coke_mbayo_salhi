@@ -5,18 +5,22 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import utils.watchDir.WatchDir;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.*;
 
 @Command(name = "build")
 public class Build implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Path to build " + "directory")
     private Path sourcePath;
+
+    @CommandLine.Option(names = {"-w", "--watch"}, description = "Allows to regenerate site when modification are made")
+    private boolean watchDir;
 
     final private String BUILD_DIRECTORY_NAME = "build";
     final private String MARKDOWN_FILE_TYPE = "md";
@@ -24,15 +28,45 @@ public class Build implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
 
-        System.out.println("Building in : " + sourcePath);
+        if (watchDir) {
+            WatchDir watcher = new WatchDir(sourcePath, false);
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future<?> future = executor.submit(watcher);
+            executor.shutdown();
+            // The while loop allows to rebuild, but it make an infinite loop that should probably be corrected later
+            while(!future.isCancelled()) {
+                if (watcher.isRebuild()) {
+                    File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
 
-        Path buildPath = sourcePath.resolve(BUILD_DIRECTORY_NAME);
+                    System.out.println("Building in : " + sourcePath);
 
-        System.out.println("buildPath = " + buildPath);
+                    Path buildPath = sourcePath.resolve(BUILD_DIRECTORY_NAME);
 
-        copyFiles(sourcePath, buildPath);
+                    System.out.println("buildPath = " + buildPath);
+
+                    copyFiles(sourcePath, buildPath);
+                    watcher.setRebuild(false);
+                }
+            }
+            // Shutdown after 10 seconds
+            executor.awaitTermination(30, TimeUnit.SECONDS);
+            // abort watcher
+            future.cancel(true);
+
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+            executor.shutdownNow();
+        }else {
+            File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
+
+            System.out.println("Building in : " + sourcePath);
+
+            Path buildPath = sourcePath.resolve(BUILD_DIRECTORY_NAME);
+
+            System.out.println("buildPath = " + buildPath);
+
+            copyFiles(sourcePath, buildPath);
+        }
 
         return 0;
     }

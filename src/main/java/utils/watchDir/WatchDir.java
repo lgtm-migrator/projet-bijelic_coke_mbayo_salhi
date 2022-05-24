@@ -1,10 +1,16 @@
 package utils.watchDir;
 
+import ch.heigvd.app.Main;
+import ch.heigvd.app.commands.Build;
+import picocli.CommandLine;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -13,12 +19,22 @@ import static java.nio.file.StandardWatchEventKinds.*;
  * Example to watch a directory (or tree) for changes to files.
  */
 
-public class WatchDir {
+public class WatchDir implements Runnable{
 
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
     private final boolean recursive;
     private boolean trace = false;
+
+    private boolean rebuild = true;
+
+    public boolean isRebuild() {
+        return rebuild;
+    }
+
+    public void setRebuild(boolean rebuild) {
+        this.rebuild = rebuild;
+    }
 
     @SuppressWarnings("unchecked")
     static <T> WatchEvent<T> cast(WatchEvent<?> event) {
@@ -82,7 +98,7 @@ public class WatchDir {
     /**
      * Process all events for keys queued to the watcher
      */
-    public void processEvents() {
+    public void run() {
         for (; ; ) {
 
             // wait for key to be signalled
@@ -90,7 +106,7 @@ public class WatchDir {
             try {
                 key = watcher.take();
             } catch (InterruptedException x) {
-                return;
+               return;
             }
 
             Path dir = keys.get(key);
@@ -114,7 +130,7 @@ public class WatchDir {
 
                 // print out event
                 System.out.format("%s: %s\n", event.kind().name(), child);
-
+                rebuild = true;
                 // if directory is created, and watching recursively, then
                 // register it and its sub-directories
                 if (recursive && (kind == ENTRY_CREATE)) {
@@ -126,6 +142,7 @@ public class WatchDir {
                         // ignore to keep sample readbale
                     }
                 }
+
             }
 
 

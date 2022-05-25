@@ -79,7 +79,7 @@ public class Build implements Callable<Integer> {
     final private String BUILD_DIRECTORY_NAME = "build";
     final private String MARKDOWN_FILE_TYPE = "md";
     final private Set<String> DIRECTORIES_TO_EXCLUDE = Set.of("build", "template");
-    final private Set<String> FILE_TYPE_TO_EXCLUDE = Set.of("yaml");
+    final private Set<String> FILES_TO_EXCLUDE = Set.of("config.json");
 
     @Override
     public Integer call() throws Exception {
@@ -96,7 +96,8 @@ public class Build implements Callable<Integer> {
             HashMap<String, String> map = new HashMap<>();
 
             Path configPath = sourcePath.resolve("config.json");
-            ch.heigvd.app.utils.parsers.SiteConfig config = JsonConverter.convertSite(configPath.toString());
+            String configContent = Files.readString(configPath);
+            ch.heigvd.app.utils.parsers.SiteConfig config = JsonConverter.convertSite(configContent);
 
             map.put("title", config.getTitle());
             map.put("lang", config.getLang());
@@ -139,38 +140,36 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                if (!dir.startsWith(destination)) {
-                    if (!dir.startsWith(sourcePath.resolve("build")) && !dir.startsWith(sourcePath.resolve("template"))) {
-                        if (dir.startsWith(sourcePath.resolve("template"))) {
-                            HashMap<String, String> map = new HashMap<>();
+                if (!dir.startsWith(sourcePath.resolve("build")) && !dir.startsWith(sourcePath.resolve("template"))) {
+                    if (dir.startsWith(sourcePath.resolve("template"))) {
+                        HashMap<String, String> map = new HashMap<>();
 
-                            // Get values from config file and create Layout
+                        // Get values from config file and create Layout
+                        try {
+                            Path configPath = sourcePath.resolve("config.json");
+                            SiteConfig config = JsonConverter.convertSite(configPath.toString());
+
+                            map.put("title", config.getTitle());
+                            map.put("lang", config.getLang());
+                            map.put("charset", config.getCharset());
+
+                            Path layoutPath = sourcePath.resolve("template").resolve("layout.html");
+                            String layoutContent = Files.readString(layoutPath);
+
+                            layout = new Layout(map, layoutContent);
+                        } catch (Exception e) {
+                            System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
+                            return FileVisitResult.TERMINATE;
+                        }
+                    } else if (!dir.startsWith(sourcePath.resolve("build"))) {
+                        if (!dir.startsWith(sourcePath.resolve("build")) || !dir.startsWith(sourcePath.resolve("template"))) {
                             try {
-                                Path configPath = sourcePath.resolve("config.json");
-                                SiteConfig config = JsonConverter.convertSite(configPath.toString());
-
-                                map.put("title", config.getTitle());
-                                map.put("lang", config.getLang());
-                                map.put("charset", config.getCharset());
-
-                                Path layoutPath = sourcePath.resolve("template").resolve("layout.html");
-                                String layoutContent = Files.readString(layoutPath);
-
-                                layout = new Layout(map, layoutContent);
-                            } catch (Exception e) {
-                                System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
+                                Path destinationPath = destination.resolve(source.relativize(dir));
+                                Files.createDirectory(destinationPath);
+                                System.out.println("Directory " + destinationPath + " successfully created");
+                            } catch (IOException e) {
+                                System.err.println("An error was encounter during the creation of a directory: " + e.getMessage());
                                 return FileVisitResult.TERMINATE;
-                            }
-                        } else if (!dir.startsWith(sourcePath.resolve("build"))) {
-                            if (!dir.startsWith(sourcePath.resolve("build")) || !dir.startsWith(sourcePath.resolve("template"))) {
-                                try {
-                                    Path destinationPath = destination.resolve(source.relativize(dir));
-                                    Files.createDirectory(destinationPath);
-                                    System.out.println("Directory " + destinationPath + " successfully created");
-                                } catch (IOException e) {
-                                    System.err.println("An error was encounter during the creation of a directory: " + e.getMessage());
-                                    return FileVisitResult.TERMINATE;
-                                }
                             }
                         }
                     }
@@ -188,10 +187,10 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                String fileExtension = FilenameUtils.getExtension(file.toString());
                 // Check if visited file extension is not in excluded list
-                if(!FILE_TYPE_TO_EXCLUDE.contains(fileExtension)){
-                    if(fileExtension.equals(MARKDOWN_FILE_TYPE)){
+                if(!FILES_TO_EXCLUDE.contains(file.getFileName().toString())){
+                    // Check if file extension is markdown to transform in HTML file
+                    if(FilenameUtils.getExtension(file.toString()).equals(MARKDOWN_FILE_TYPE)){
                         StringBuilder htmlContent = new StringBuilder();
                         StringBuilder pageConfigContent = new StringBuilder();
                         PageConfig pageConfig = null;
@@ -206,15 +205,13 @@ public class Build implements Callable<Integer> {
                                 if(startToCopy){
                                     htmlContent.append(ch.heigvd.app.utils.parsers.MarkdownConverter.convert(str));
                                 }
+                                else if(str.equals("---")){
+                                    // Copy markdown file header to a PageConfig and start copying markdown from specific line
+                                    pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
+                                    startToCopy = true;
+                                }
                                 else{
                                     pageConfigContent.append(str);
-                                }
-                                // Copy markdown file header to a PageConfig and start copying markdown from specific line
-                                if(str.equals("---")){
-
-                                    pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
-
-                                    startToCopy = true;
                                 }
                             }
                         } catch (IOException e) {
@@ -234,6 +231,7 @@ public class Build implements Callable<Integer> {
                         htmlWriter.close();
                         System.out.println("File " + htmlFile + " successfully created");
                     }
+                    // If not markdown, the file will be copied
                     else {
                         // Bug fix Linux
                         if(!file.startsWith(destination)) {

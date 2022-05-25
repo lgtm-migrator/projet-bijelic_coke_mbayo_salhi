@@ -1,6 +1,7 @@
 package ch.heigvd.app.commands;
 
-import ch.heigvd.app.utils.parsers.JsonConverter;
+import ch.heigvd.app.utils.JsonConverter;
+import ch.heigvd.app.utils.parsers.MarkdownConverter;
 import ch.heigvd.app.utils.parsers.PageConfig;
 import ch.heigvd.app.utils.parsers.SiteConfig;
 import org.apache.commons.io.FileUtils;
@@ -203,7 +204,7 @@ public class Build implements Callable<Integer> {
                             boolean startToCopy = false;
                             while ((str = reader.readLine()) != null) {
                                 if(startToCopy){
-                                    htmlContent.append(ch.heigvd.app.utils.parsers.MarkdownConverter.convert(str));
+                                    htmlContent.append(MarkdownConverter.convert(str));
                                 }
                                 else if(str.equals("---")){
                                     // Copy markdown file header to a PageConfig and start copying markdown from specific line

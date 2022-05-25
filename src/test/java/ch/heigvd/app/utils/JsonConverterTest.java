@@ -1,6 +1,5 @@
 package ch.heigvd.app.utils;
 
-import ch.heigvd.app.utils.parsers.JsonConverter;
 import ch.heigvd.app.utils.parsers.SiteConfig;
 import org.junit.Test;
 

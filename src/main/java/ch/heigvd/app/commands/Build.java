@@ -37,15 +37,7 @@ public class Build implements Callable<Integer> {
             // The while loop allows to rebuild, but it make an infinite loop that should probably be corrected later
             while(!future.isCancelled()) {
                 if (watcher.isRebuild()) {
-                    File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
-
-                    System.out.println("Building in : " + sourcePath);
-
-                    Path buildPath = sourcePath.resolve(BUILD_DIRECTORY_NAME);
-
-                    System.out.println("buildPath = " + buildPath);
-
-                    copyFiles(sourcePath, buildPath);
+                    building();
                     watcher.setRebuild(false);
                 }
             }
@@ -57,18 +49,22 @@ public class Build implements Callable<Integer> {
             executor.awaitTermination(1, TimeUnit.SECONDS);
             executor.shutdownNow();
         }else {
-            File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
-
-            System.out.println("Building in : " + sourcePath);
-
-            Path buildPath = sourcePath.resolve(BUILD_DIRECTORY_NAME);
-
-            System.out.println("buildPath = " + buildPath);
-
-            copyFiles(sourcePath, buildPath);
+            building();
         }
 
         return 0;
+    }
+
+    private void building() throws Exception{
+        File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
+
+        System.out.println("Building in : " + sourcePath);
+
+        Path buildPath = sourcePath.resolve(BUILD_DIRECTORY_NAME);
+
+        System.out.println("buildPath = " + buildPath);
+
+        copyFiles(sourcePath, buildPath);
     }
 
     /**

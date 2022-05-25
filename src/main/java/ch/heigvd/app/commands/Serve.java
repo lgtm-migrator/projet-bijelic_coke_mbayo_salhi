@@ -65,12 +65,14 @@ public class Serve implements Callable<Integer> {
                 }
 
             }
+            // Shutdown after 10 seconds
+            executor.awaitTermination(30, TimeUnit.SECONDS);
+            // abort watcher
+            future.cancel(true);
 
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+            executor.shutdownNow();
         }
-        // run until server shutdown (may be a better option there)
-        //while(running.get()){
-            //TimeUnit.SECONDS.sleep(5);
-        //}
 
         return 0;
     }

@@ -18,32 +18,34 @@ public class TestDirectoryManager {
 
     /**
      * Create a basic test directory
-     * @param dirName Test directory name
-     * @param websiteName Test website name
+     * @param dirPath Test directory name
+     * @param websitePath Test website name
      * @throws IOException Error during creation or deletion of files
      */
-    public static void createBasicTestDirectory(Path dirName, String websiteName) throws IOException {
-        String indexMdContent = "titre: Mon premier article\n" +
-                "auteur: Bertil Chapuis\n" +
-                "date: 2021-03-10\n" +
+    public static void createBasicTestDirectory(Path dirPath, Path websitePath) throws IOException {
+        String indexMdContent = "{\n" +
+                "\"titre\": \"Mon premier article\",\n" +
+                "\"auteur\": \"Bertil Chapuis\",\n" +
+                "\"date\": \"2021-03-10\"\n" +
+                "}\n" +
                 "---\n" +
                 "# Mon premier article\n" +
                 "## Mon sous-titre\n" +
-                "Le contenu de mon article.\n"+
+                "Le contenu de mon article.\n" +
                 "![Une image](./image.png)";
 
-        String pageMdContent = "titre: Ma premiere page\n" +
-                "auteur: Bertil Chapuis\n" +
-                "date: 2021-03-10\n" +
+        String pageMdContent = "{\n" +
+                "\"titre\": \"Ma premiere page\",\n" +
+                "\"auteur\": \"Bertil Chapuis\",\n" +
+                "\"date\": \"2021-03-10\"\n" +
+                "}\n" +
                 "---\n" +
                 "# Ma première page\n";
 
         String configJson = "{\"title\": \"Mon site internet\"}";
 
         //Files.createDirectories(dirName);
-        System.out.println("Directory " + dirName + " is created!");
-
-        Path websitePath = Paths.get(dirName + "/" + websiteName);
+        System.out.println("Directory " + dirPath + " is created!");
 
         Path dossierPath = Paths.get(websitePath + "/dossier/");
         Files.createDirectories(dossierPath);
@@ -61,14 +63,14 @@ public class TestDirectoryManager {
 
     /**
      * Create a basic test directory with a template folder
-     * @param dirName Test directory name
-     * @param websiteName Test website name
+     * @param dirPath Test directory name
+     * @param websitePath Test website name
      * @throws IOException Error during creation or deletion of files
      */
-    public static void createTemplateTestDirectory(Path dirName, String websiteName) throws IOException {
-        createBasicTestDirectory(dirName, websiteName);
+    public static void createTemplateTestDirectory(Path dirPath, Path websitePath) throws IOException {
+        createBasicTestDirectory(dirPath, websitePath);
 
-        Path templatePath = Paths.get(dirName + "/" + websiteName + "/template/");
+        Path templatePath = websitePath.resolve("template");
         Files.createDirectory(templatePath);
         System.out.println("Directory " + templatePath + " is created!");
 
@@ -98,11 +100,11 @@ public class TestDirectoryManager {
                                  "</ul>";
 
         // Rewrite page.md file as it is not the same as the basic website one
-        createFileWithContent(Paths.get(dirName + "/" + websiteName + "/dossier/page.md"), pageMdContent);
+        createFileWithContent(websitePath.resolve("dossier").resolve("page.md"), pageMdContent);
 
-        createFileWithContent(Paths.get(templatePath + "/layout.html"), layoutHtmlContent);
+        createFileWithContent(templatePath.resolve("layout.html"), layoutHtmlContent);
 
-        createFileWithContent(Paths.get(templatePath + "/menu.html"), menuHtmlContent);
+        createFileWithContent(templatePath.resolve("menu.html"), menuHtmlContent);
     }
 
 

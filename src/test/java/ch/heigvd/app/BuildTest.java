@@ -28,55 +28,13 @@ public class BuildTest {
      * Create test directory with files
      */
     @Before
-
     public void createBasicFolderForTesting(){
         deleteTestDirectory();
 
-        String indexMdContent = "titre: Mon premier article\n" +
-                "auteur: Bertil Chapuis\n" +
-                "date: 2021-03-10\n" +
-                "---\n" +
-                "# Mon premier article\n" +
-                "## Mon sous-titre\n" +
-                "Le contenu de mon article.\n"+
-                "![Une image](./image.png)";
-
-        String pageMdContent = "titre: Ma premiere page\n" +
-                "auteur: Bertil Chapuis\n" +
-                "date: 2021-03-10\n" +
-                "---\n" +
-                "# Ma première page\n";
-
-        String configYaml = "title: Mon site internet";
-
-        try{
-            Path dossierPath = websitePath.resolve("dossier");
-            Files.createDirectories(dossierPath);
-            System.out.println("Directory " + dossierPath + " is created!");
-
-            OutputStreamWriter pageWriter = new OutputStreamWriter(new FileOutputStream(dossierPath.resolve("page.md").toString()), StandardCharsets.UTF_8);
-            pageWriter.write(pageMdContent);
-            pageWriter.flush();
-            pageWriter.close();
-            System.out.println("File dossier/page.md is created and its content added!");
-
-            Path imagePath = dossierPath.resolve("image.png");
-            Files.createFile(imagePath);
-
-            OutputStreamWriter indexWriter = new OutputStreamWriter(new FileOutputStream(websitePath.resolve("index.md").toString()), StandardCharsets.UTF_8);
-            indexWriter.write(indexMdContent);
-            indexWriter.flush();
-            indexWriter.close();
-            System.out.println("File index.md is created and its content added!");
-
-            OutputStreamWriter configWriter = new OutputStreamWriter(new FileOutputStream(websitePath.resolve("config.yaml").toString()), StandardCharsets.UTF_8);
-            configWriter.write(configYaml);
-            configWriter.flush();
-            configWriter.close();
-            System.out.println("File config.yaml is created and its content added!");
-
+        try {
+            TestDirectoryManager.createBasicTestDirectory(dirPath, websitePath);
         } catch (IOException e) {
-            System.err.println("Error while creating test directory " + e.getMessage());
+            System.out.println("Error during creation of test directory!" + e.getMessage());
         }
     }
 

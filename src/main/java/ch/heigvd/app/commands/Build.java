@@ -1,11 +1,8 @@
 package ch.heigvd.app.commands;
 
-
-
-
-
 import ch.heigvd.app.utils.parsers.JsonConverter;
 import ch.heigvd.app.utils.parsers.PageConfig;
+import ch.heigvd.app.utils.parsers.SiteConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
@@ -86,8 +83,6 @@ public class Build implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
-
         System.out.println("Building in : " + sourcePath);
 
 
@@ -97,26 +92,25 @@ public class Build implements Callable<Integer> {
 
         copyFiles(sourcePath, buildPath);
         // Get values from config file and create Layout
-/*        try {
+        try {
             HashMap<String, String> map = new HashMap<>();
 
-            Path configPath = Paths.get(sourcePath + "\\config.json");
-            ch.heigvd.app.utils.parser.SiteConfig config = JsonConverter.convertSite(configPath.toString());
+            Path configPath = sourcePath.resolve("config.json");
+            ch.heigvd.app.utils.parsers.SiteConfig config = JsonConverter.convertSite(configPath.toString());
 
             map.put("title", config.getTitle());
             map.put("lang", config.getLang());
             map.put("charset", config.getCharset());
 
-            Path layoutPath = Paths.get(sourcePath + "\\template\\layout.html");
+            Path layoutPath = sourcePath.resolve("template").resolve("layout.html");
             String layoutContent = Files.readString(layoutPath);
 
             layout = new Layout(map, layoutContent);
 
-            copyFiles(sourcePath, sourcePath + "/" + BUILD_DIRECTORY_NAME);
+            copyFiles(sourcePath, sourcePath.resolve(BUILD_DIRECTORY_NAME));
         } catch (Exception e) {
-
             System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
-        }*/
+        }
 
 
         return 0;
@@ -144,41 +138,42 @@ public class Build implements Callable<Integer> {
              * @throws IOException Throw exception if creation fails
              */
             @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                if (!dir.startsWith(destination)) {
+                    if (!dir.startsWith(sourcePath.resolve("build")) && !dir.startsWith(sourcePath.resolve("template"))) {
+                        if (dir.startsWith(sourcePath.resolve("template"))) {
+                            HashMap<String, String> map = new HashMap<>();
 
+                            // Get values from config file and create Layout
+                            try {
+                                Path configPath = sourcePath.resolve("config.json");
+                                SiteConfig config = JsonConverter.convertSite(configPath.toString());
 
-                if(!dir.startsWith(destination)){
-                //if(!dir.startsWith(sourcePath + "\\build") && !dir
-                    // .startsWith(sourcePath + "\\template")){
+                                map.put("title", config.getTitle());
+                                map.put("lang", config.getLang());
+                                map.put("charset", config.getCharset());
 
-/*                if(dir.startsWith(sourcePath + "\\template")){
-                    HashMap<String, String> map = new HashMap<>();
+                                Path layoutPath = sourcePath.resolve("template").resolve("layout.html");
+                                String layoutContent = Files.readString(layoutPath);
 
-                    // Get values from config file and create Layout
-                    try {
-                        Path configPath = Paths.get(sourcePath + "\\config.json");
-                        JavaConfig config = JsonConverter.convert(configPath.toString());
-
-                        map.put("title", config.getTitle());
-                        map.put("lang", config.getLang());
-                        map.put("charset", config.getCharset());
-
-                        Path layoutPath = Paths.get(sourcePath + "\\template\\layout.html");
-                        String layoutContent = Files.readString(layoutPath);
-
-                        layout = new Layout(map, layoutContent);
-                    } catch (Exception e) {
-                        System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
-                        return FileVisitResult.TERMINATE;
+                                layout = new Layout(map, layoutContent);
+                            } catch (Exception e) {
+                                System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
+                                return FileVisitResult.TERMINATE;
+                            }
+                        } else if (!dir.startsWith(sourcePath.resolve("build"))) {
+                            if (!dir.startsWith(sourcePath.resolve("build")) || !dir.startsWith(sourcePath.resolve("template"))) {
+                                try {
+                                    Path destinationPath = destination.resolve(source.relativize(dir));
+                                    Files.createDirectory(destinationPath);
+                                    System.out.println("Directory " + destinationPath + " successfully created");
+                                } catch (IOException e) {
+                                    System.err.println("An error was encounter during the creation of a directory: " + e.getMessage());
+                                    return FileVisitResult.TERMINATE;
+                                }
+                            }
+                        }
                     }
-                }
-                else if(!dir.startsWith(sourcePath + "\\build")){*/
-
-                //if(!dir.startsWith(sourcePath + "\\build") || !dir
-                    // .startsWith(sourcePath + "\\template")){
-                    Path destinationPath = destination.resolve(source.relativize(dir));
-                    Files.createDirectory(destinationPath);
-                    System.out.println("Directory " + destinationPath + " successfully created");
                 }
 
                 return FileVisitResult.CONTINUE;
@@ -216,9 +211,9 @@ public class Build implements Callable<Integer> {
                                 }
                                 // Copy markdown file header to a PageConfig and start copying markdown from specific line
                                 if(str.equals("---")){
-                                    /*
+
                                     pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
-                                    */
+
                                     startToCopy = true;
                                 }
                             }

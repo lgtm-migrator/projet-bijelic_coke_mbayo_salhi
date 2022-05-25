@@ -27,6 +27,7 @@ public class WatchDir implements Runnable{
     private boolean trace = false;
 
     private boolean rebuild = true;
+    private boolean reserve = false;
 
     public boolean isRebuild() {
         return rebuild;
@@ -34,6 +35,14 @@ public class WatchDir implements Runnable{
 
     public void setRebuild(boolean rebuild) {
         this.rebuild = rebuild;
+    }
+
+    public boolean isReserve() {
+        return reserve;
+    }
+
+    public void setReserve(boolean reserve) {
+        this.reserve = reserve;
     }
 
     @SuppressWarnings("unchecked")
@@ -131,6 +140,8 @@ public class WatchDir implements Runnable{
                 // print out event
                 System.out.format("%s: %s\n", event.kind().name(), child);
                 rebuild = true;
+                reserve = true;
+
                 // if directory is created, and watching recursively, then
                 // register it and its sub-directories
                 if (recursive && (kind == ENTRY_CREATE)) {

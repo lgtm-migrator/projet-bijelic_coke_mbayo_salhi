@@ -74,9 +74,11 @@ public class TestDirectoryManager {
         Files.createDirectory(templatePath);
         System.out.println("Directory " + templatePath + " is created!");
 
-        String pageMdContent = "titre: Mon premier article\n" +
-                "auteur: Bertil Chapuis\n" +
-                "date: 2021-03-10\n" +
+        String pageMdContent = "{\n" +
+                "\"titre\": \"Ma premiere page\",\n" +
+                "\"auteur\": \"Bertil Chapuis\",\n" +
+                "\"date\": \"2021-03-10\"\n" +
+                "}\n" +
                 "---\n" +
                 "# Mon titre\n" +
                 "## Mon sous-titre\n" +

@@ -148,7 +148,8 @@ public class Build implements Callable<Integer> {
                         // Get values from config file and create Layout
                         try {
                             Path configPath = sourcePath.resolve("config.json");
-                            SiteConfig config = JsonConverter.convertSite(configPath.toString());
+                            String configContent = Files.readString(configPath);
+                            SiteConfig config = JsonConverter.convertSite(configContent);
 
                             map.put("title", config.getTitle());
                             map.put("lang", config.getLang());
@@ -188,56 +189,58 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                // Check if visited file extension is not in excluded list
-                if(!FILES_TO_EXCLUDE.contains(file.getFileName().toString())){
-                    // Check if file extension is markdown to transform in HTML file
-                    if(FilenameUtils.getExtension(file.toString()).equals(MARKDOWN_FILE_TYPE)){
-                        StringBuilder htmlContent = new StringBuilder();
-                        StringBuilder pageConfigContent = new StringBuilder();
-                        PageConfig pageConfig = null;
 
-                        try (FileInputStream fis = new FileInputStream(file.toString());
-                             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-                             BufferedReader reader = new BufferedReader(isr)
-                        ) {
-                            String str;
-                            boolean startToCopy = false;
-                            while ((str = reader.readLine()) != null) {
-                                if(startToCopy){
-                                    htmlContent.append(MarkdownConverter.convert(str));
+                if(!DIRECTORIES_TO_EXCLUDE.contains(file.getFileName().toString())) {
+                    // Check if visited file extension is not in excluded list
+                    if (!FILES_TO_EXCLUDE.contains(file.getFileName().toString())) {
+                        // Check if file extension is markdown to transform in HTML file
+                        if (FilenameUtils.getExtension(file.toString()).equals(MARKDOWN_FILE_TYPE)) {
+                            StringBuilder htmlContent = new StringBuilder();
+                            StringBuilder pageConfigContent = new StringBuilder();
+                            PageConfig pageConfig = null;
+
+                            try (FileInputStream fis = new FileInputStream(file.toString());
+                                 InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                                 BufferedReader reader = new BufferedReader(isr)
+                            ) {
+                                String str;
+                                boolean startToCopy = false;
+                                while ((str = reader.readLine()) != null) {
+                                    if (startToCopy) {
+                                        htmlContent.append(MarkdownConverter.convert(str));
+                                    } else if (str.equals("---")) {
+                                        System.out.println(pageConfigContent);
+                                        // Copy markdown file header to a PageConfig and start copying markdown from specific line
+                                        pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
+                                        startToCopy = true;
+                                    } else {
+                                        pageConfigContent.append(str);
+                                    }
                                 }
-                                else if(str.equals("---")){
-                                    // Copy markdown file header to a PageConfig and start copying markdown from specific line
-                                    pageConfig = JsonConverter.convertPage(pageConfigContent.toString());
-                                    startToCopy = true;
-                                }
-                                else{
-                                    pageConfigContent.append(str);
-                                }
+                            } catch (IOException e) {
+                                System.err.println("Error while reading markdown file");
                             }
-                        } catch (IOException e) {
-                            System.err.println("Error while reading markdown file");
+
+                            Path htmlFile = Paths.get(
+                                    FilenameUtils.removeExtension(
+                                            destination.resolve(source.relativize(file)).toString()) + ".html"
+                            );
+                            Files.createFile(htmlFile);
+
+                            // Write HTML content in destination file
+                            OutputStreamWriter htmlWriter = new OutputStreamWriter(new FileOutputStream(htmlFile.toString()), StandardCharsets.UTF_8);
+                            htmlWriter.write(htmlContent.toString());
+                            htmlWriter.flush();
+                            htmlWriter.close();
+                            System.out.println("File " + htmlFile + " successfully created");
                         }
-
-                        Path htmlFile = Paths.get(
-                                FilenameUtils.removeExtension(
-                                        destination.resolve(source.relativize(file)).toString()) + ".html"
-                        );
-                        Files.createFile(htmlFile);
-
-                        // Write HTML content in destination file
-                        OutputStreamWriter htmlWriter = new OutputStreamWriter(new FileOutputStream(htmlFile.toString()), StandardCharsets.UTF_8);
-                        htmlWriter.write(htmlContent.toString());
-                        htmlWriter.flush();
-                        htmlWriter.close();
-                        System.out.println("File " + htmlFile + " successfully created");
-                    }
-                    // If not markdown, the file will be copied
-                    else {
-                        // Bug fix Linux
-                        if(!file.startsWith(destination)) {
-                            Files.copy(file, destination.resolve(source.relativize(file)), options);
-                            System.out.println("File " + file + " successfully copied");
+                        // If not markdown, the file will be copied
+                        else {
+                            // Bug fix Linux
+                            if (!file.startsWith(destination)) {
+                                Files.copy(file, destination.resolve(source.relativize(file)), options);
+                                System.out.println("File " + file + " successfully copied");
+                            }
                         }
                     }
                 }

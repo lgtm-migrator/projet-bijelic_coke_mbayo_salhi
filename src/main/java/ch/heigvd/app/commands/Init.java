@@ -6,6 +6,8 @@ import picocli.CommandLine.Command;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 @Command(name = "init")
@@ -20,28 +22,29 @@ public class Init implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
 
-        File myPath =
-                new File(System.getProperty("user" + ".dir") + "/" + path +
-                        "/");
+        Path myPath = Paths.get(System.getProperty("user" + ".dir")).resolve(path);
 
         System.out.println("Initializing: " + path);
 
 
         Boolean exists = false;
         if(!overwrite) {
-            File f = new File("config/");
+            File f = Paths.get("config").toFile();
 
             // Populates the array with names of files and directories
             String[] pathnames = f.list();
 
-            // check if files already exists in destination folder
+            System.out.println("Pathnames = " + pathnames);
 
-            for (String file : pathnames) {
-                File pathToFile = new File(myPath + "/" + file);
-                if (Files.exists(pathToFile.toPath())) {
-                    System.out.println("File \"" + file + "\" already exists");
-                    if (!exists) {
-                        exists = true;
+            // check if files already exists in destination folder
+            if(pathnames != null){
+                for (String file : pathnames) {
+                    File pathToFile = myPath.resolve(file).toFile();
+                    if (Files.exists(pathToFile.toPath())) {
+                        System.out.println("File \"" + file + "\" already exists");
+                        if (!exists) {
+                            exists = true;
+                        }
                     }
                 }
             }
@@ -55,8 +58,10 @@ public class Init implements Callable<Integer> {
 
         // copy config directory to init path
         if(!exists || overwrite) {
-            File sourceDirectory = new File("config/");
-            File destinationDirectory = new File(myPath.toString());
+            File sourceDirectory = Paths.get("config").toFile();
+            File destinationDirectory = myPath.toFile();
+
+            sourceDirectory.mkdirs();
 
             FileUtils.copyDirectory(sourceDirectory, destinationDirectory);
         }

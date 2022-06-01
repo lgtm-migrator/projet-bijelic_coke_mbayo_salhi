@@ -6,7 +6,6 @@ import ch.heigvd.app.utils.parsers.PageConfig;
 import ch.heigvd.app.utils.parsers.SiteConfig;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.FileTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import org.apache.commons.io.FileUtils;
@@ -87,7 +86,7 @@ public class Build implements Callable<Integer> {
     final private String CONFIG_FILENAME = "config.json";
     final private String BUILD_DIRECTORY_NAME = "build";
     final private String MARKDOWN_FILE_TYPE = "md";
-    final private Set<String> DIRECTORIES_TO_EXCLUDE = Set.of("build", "template");
+    final private Set<String> DIRECTORIES_TO_EXCLUDE = Set.of("build");
     final private Set<String> FILES_TO_EXCLUDE = Set.of(CONFIG_FILENAME);
 
     @Override
@@ -150,39 +149,38 @@ public class Build implements Callable<Integer> {
              */
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                if (!dir.startsWith(sourcePath.resolve("build"))) {
-                    if (dir.startsWith(sourcePath.resolve("template"))) {
-                        HashMap<String, String> map = new HashMap<>();
+                if(DIRECTORIES_TO_EXCLUDE.contains(dir.getFileName().toString()))
+                    return FileVisitResult.CONTINUE;
 
-                        // Get values from config file and create Layout
-                        try {
-                            Path configPath = sourcePath.resolve(CONFIG_FILENAME);
-                            String configContent = Files.readString(configPath);
-                            SiteConfig config = JsonConverter.convertSite(configContent);
+                if (dir.startsWith(sourcePath.resolve("template"))) {
+                    HashMap<String, String> map = new HashMap<>();
 
-                            map.put("title", config.getTitle());
-                            map.put("lang", config.getLang());
-                            map.put("charset", config.getCharset());
+                    // Get values from config file and create Layout
+                    try {
+                        Path configPath = sourcePath.resolve(CONFIG_FILENAME);
+                        String configContent = Files.readString(configPath);
+                        SiteConfig config = JsonConverter.convertSite(configContent);
 
-                            Path layoutPath = sourcePath.resolve("template").resolve("layout.html");
-                            String layoutContent = Files.readString(layoutPath);
+                        map.put("title", config.getTitle());
+                        map.put("lang", config.getLang());
+                        map.put("charset", config.getCharset());
 
-                            layout = new Layout(map, layoutContent);
-                        } catch (Exception e) {
-                            System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
-                            return FileVisitResult.TERMINATE;
-                        }
-                    } else if (!dir.startsWith(sourcePath.resolve("build"))) {
-                        if (!dir.startsWith(sourcePath.resolve("build")) || !dir.startsWith(sourcePath.resolve("template"))) {
-                            try {
-                                Path destinationPath = destination.resolve(source.relativize(dir));
-                                Files.createDirectory(destinationPath);
-                                System.out.println("Directory " + destinationPath + " successfully created");
-                            } catch (IOException e) {
-                                System.err.println("An error was encounter during the creation of a directory: " + e.getMessage());
-                                return FileVisitResult.TERMINATE;
-                            }
-                        }
+                        Path layoutPath = sourcePath.resolve("template").resolve("layout.html");
+                        String layoutContent = Files.readString(layoutPath);
+
+                        layout = new Layout(map, layoutContent);
+                    } catch (Exception e) {
+                        System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
+                        return FileVisitResult.TERMINATE;
+                    }
+                } else {
+                    try {
+                        Path destinationPath = destination.resolve(source.relativize(dir));
+                        Files.createDirectory(destinationPath);
+                        System.out.println("Directory " + destinationPath + " successfully created");
+                    } catch (IOException e) {
+                        System.err.println("An error was encounter during the creation of a directory: " + e.getMessage());
+                        return FileVisitResult.TERMINATE;
                     }
                 }
 

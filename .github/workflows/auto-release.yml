@@ -16,22 +16,27 @@ jobs:
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v3
-      - run: mvn clean package install | echo "done!"
-      - run: mkdir staging && cp target/*.jar staging
-      - uses: actions/upload-artifact@v3
+             
+      - name: Build package and generate javadoc
+        run: mvn clean javadoc:javadoc package install
+      
+      
+      - name: Copy JARs to working directory
+        run: cp target/*.jar .
+      
+
+      - name: Zip javadoc files
+        run: zip -r javadoc.zip target/site/apidocs/
+      
+    
+      - name: Upload files to release
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          name: Target
-          path: staging
-      - name: Download a single artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Target
-      - run: ls
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          automatic_release_tag: "latest"
+          automatic_release_tag: latest
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            LICENSE.txt
+            LICENSE.md
             *.jar
+            javadoc.zip
+

@@ -1,35 +1,47 @@
 package ch.heigvd.app.commands;
 
+import ch.heigvd.app.Main;
 import io.javalin.plugin.rendering.FileRenderer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.javalin.Javalin;
+import utils.watchDir.WatchDir;
 
 @Command(name = "serve")
 public class Serve implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Path to serve " +
             "directory")
-    private String path;
+    private Path path;
+
+    @CommandLine.Option(names = {"-w", "--watch"}, description = "Allows to regenerate site when modification are made")
+    private boolean watchDir;
 
     @Override
     public Integer call() throws Exception {
+        Main appMain = new Main();
+        CommandLine cmd = new CommandLine(appMain);
+        StringWriter sw = new StringWriter();
+        cmd.setOut(new PrintWriter(sw));
         Javalin app = Javalin.create().start(7070);
         FileRenderer FileRenderer;
         AtomicBoolean running = new AtomicBoolean(true);
-        File index = new File(System.getProperty("user" + ".dir") + "/" + path + "/build/index.html");
+        File index = new File(System.getProperty("user" + ".dir") + "/" + path.toString() + "/build/index.html");
         if(!Files.exists(index.toPath())){
             System.out.println("Le fichier index.html n'existe pas!");
             TimeUnit.SECONDS.sleep(3);
             return -1;
         }
+
         System.out.println("Serve");
         app.get("/", ctx -> ctx.html(new String(Files.readAllBytes(Paths.get(index.toString())))));
 
@@ -38,10 +50,29 @@ public class Serve implements Callable<Integer> {
             running.set(false);
         }));
 
-        // run until server shutdown (may be a better option there)
-        //while(running.get()){
-            TimeUnit.SECONDS.sleep(5);
-        //}
+        if (watchDir) {
+            WatchDir watcher = new WatchDir(path, false);
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future<?> future = executor.submit(watcher);
+            executor.shutdown();
+
+            while(!future.isCancelled()) {
+                if (watcher.isReserve()) {
+                    cmd.execute("build", path.toString());
+                    TimeUnit.SECONDS.sleep(3);
+                    System.out.println("Re-served");
+                    watcher.setReserve(false);
+                }
+
+            }
+            // Shutdown after 10 seconds
+            executor.awaitTermination(30, TimeUnit.SECONDS);
+            // abort watcher
+            future.cancel(true);
+
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+            executor.shutdownNow();
+        }
 
         return 0;
     }

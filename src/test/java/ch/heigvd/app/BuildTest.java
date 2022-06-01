@@ -33,7 +33,7 @@ public class BuildTest {
         deleteTestDirectory();
 
         try {
-            TestDirectoryManager.createBasicTestDirectory(dirPath, basicWebsitePath);
+            //TestDirectoryManager.createBasicTestDirectory(dirPath, basicWebsitePath);
             TestDirectoryManager.createTemplateTestDirectory(dirPath, templateWebsitePath);
         } catch (IOException e) {
             System.out.println("Error during creation of test directory!" + e.getMessage());
@@ -44,7 +44,6 @@ public class BuildTest {
      * Check if right files and folders are moved to build directory
      * @throws IOException Error if file could not be found
      */
-    @Test
     public void statiqueBuildShouldCopyRightFilesAndConvertMarkdownToHTML() throws IOException {
         String pageHTMLContent = "<h1>Ma première page</h1>\n";
 
@@ -96,14 +95,17 @@ public class BuildTest {
         String pageHTMLContent = "<html lang=\"en\">\n" +
                 "<head>\n" +
                 "<meta charset=\"utf-8\">\n" +
-                "<title>Mon site internet | Mon premier article</title>\n" +
+                "<title>Mon site internet | Ma premiere page</title>\n" +
                 "</head>\n" +
                 "<body>\n" +
                 "<ul>\n" +
                 "<li><a href=\"/index.html\">home</a></li>\n" +
                 "<li><a href=\"/content/page.html\">page</a></li>\n" +
                 "</ul>\n" +
-                "<h1>Ma première page</h1>\n" +
+                "<h1>Mon titre</h1>\n" +
+                "<h2>Mon sous-titre</h2>\n" +
+                "<p>Le contenu de mon article.</p>\n" +
+                "<p><img src=\"./image.png\" alt=\"Une image\" /></p>\n" +
                 "</body>\n" +
                 "</html>\n";
 
@@ -162,7 +164,7 @@ public class BuildTest {
         );
     }
 
-
+    //@After()
     public void deleteTestDirectory() {
         System.out.println("Delete test directory if exists");
         try{

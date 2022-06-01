@@ -24,8 +24,8 @@ public class TestDirectoryManager {
      */
     public static void createBasicTestDirectory(Path dirPath, Path websitePath) throws IOException {
         String indexMdContent = "{\n" +
-                "\"titre\": \"Mon premier article\",\n" +
-                "\"auteur\": \"Bertil Chapuis\",\n" +
+                "\"title\": \"Mon premier article\",\n" +
+                "\"author\": \"Bertil Chapuis\",\n" +
                 "\"date\": \"2021-03-10\"\n" +
                 "}\n" +
                 "---\n" +
@@ -35,14 +35,18 @@ public class TestDirectoryManager {
                 "![Une image](./image.png)";
 
         String pageMdContent = "{\n" +
-                "\"titre\": \"Ma premiere page\",\n" +
-                "\"auteur\": \"Bertil Chapuis\",\n" +
+                "\"title\": \"Ma premiere page\",\n" +
+                "\"author\": \"Bertil Chapuis\",\n" +
                 "\"date\": \"2021-03-10\"\n" +
                 "}\n" +
                 "---\n" +
                 "# Ma première page\n";
 
-        String configJson = "{\"title\": \"Mon site internet\"}";
+        String configJson = "{\n" +
+                "  \"title\": \"Mon site internet\",\n" +
+                "  \"lang\": \"fr\",\n" +
+                "  \"charset\": \"utf-8\"\n" +
+                "}";
 
         //Files.createDirectories(dirName);
         System.out.println("Directory " + dirPath + " is created!");
@@ -75,8 +79,8 @@ public class TestDirectoryManager {
         System.out.println("Directory " + templatePath + " is created!");
 
         String pageMdContent = "{\n" +
-                "\"titre\": \"Ma premiere page\",\n" +
-                "\"auteur\": \"Bertil Chapuis\",\n" +
+                "\"title\": \"Ma premiere page\",\n" +
+                "\"author\": \"Bertil Chapuis\",\n" +
                 "\"date\": \"2021-03-10\"\n" +
                 "}\n" +
                 "---\n" +
@@ -88,11 +92,11 @@ public class TestDirectoryManager {
         String layoutHtmlContent = "<html lang=\"en\">\n" +
                                     "<head>\n" +
                                         "<meta charset=\"utf-8\">\n" +
-                                        "<title>{{ site.titre }} | {{ page.titre }}</title>\n" +
+                                        "<title>{{ site.title }} | {{ page.title }}</title>\n" +
                                     "</head>\n" +
                                     "<body>\n" +
                                         "{{> menu }}\n" +
-                                        "{{ content }}\n" +
+                                        "{{{ content }}}\n" +
                                     "</body>\n" +
                                     "</html>\n";
 

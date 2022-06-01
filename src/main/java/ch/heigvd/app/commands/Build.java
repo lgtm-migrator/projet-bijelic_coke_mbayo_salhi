@@ -244,7 +244,7 @@ public class Build implements Callable<Integer> {
                             Map<String, Object> data = new HashMap();
                             data.put("site", layout.getSiteMetaData());
                             data.put("page", pageMetaData);
-                            data.put("content", htmlContent);
+                            data.put("content", htmlContent.toString().trim());
 
                             TemplateLoader loader = new FileTemplateLoader(sourcePath.resolve("template").toString(), ".html");
                             Handlebars handlebars = new Handlebars(loader);

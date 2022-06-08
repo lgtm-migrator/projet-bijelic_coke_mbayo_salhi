@@ -153,9 +153,6 @@ public class Build implements Callable<Integer> {
         } catch (Exception e) {
             System.err.println("An error was encounter during the creation of the template: " + e.getMessage());
         }
-
-
-        return 0;
     }
 
     /**

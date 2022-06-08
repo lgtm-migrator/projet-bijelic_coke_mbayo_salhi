@@ -34,8 +34,6 @@ public class Init implements Callable<Integer> {
             // Populates the array with names of files and directories
             String[] pathnames = f.list();
 
-            System.out.println("Pathnames = " + pathnames);
-
             // check if files already exists in destination folder
             if(pathnames != null){
                 for (String file : pathnames) {

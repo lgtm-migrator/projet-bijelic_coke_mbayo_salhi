@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import utils.watchDir.WatchDir;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.*;
 
 /**
  * Represent the layout that is applied to all HTML pages
@@ -82,8 +83,11 @@ public class Build implements Callable<Integer> {
 
     private Layout layout = null;
 
-
     final private String CONFIG_FILENAME = "config.json";
+  
+    @CommandLine.Option(names = {"-w", "--watch"}, description = "Allows to regenerate site when modification are made")
+    private boolean watchDir;
+
     final private String BUILD_DIRECTORY_NAME = "build";
     final private String MARKDOWN_FILE_TYPE = "md";
     final private Set<String> DIRECTORIES_TO_EXCLUDE = Set.of("build");
@@ -91,6 +95,35 @@ public class Build implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
+        if (watchDir) {
+            WatchDir watcher = new WatchDir(sourcePath, false);
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future<?> future = executor.submit(watcher);
+            executor.shutdown();
+            // The while loop allows to rebuild, but it make an infinite loop that should probably be corrected later
+            while(!future.isCancelled()) {
+                if (watcher.isRebuild()) {
+                    building();
+                    watcher.setRebuild(false);
+                }
+            }
+            // Shutdown after 10 seconds
+            executor.awaitTermination(30, TimeUnit.SECONDS);
+            // abort watcher
+            future.cancel(true);
+
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+            executor.shutdownNow();
+        }else {
+            building();
+        }
+
+        return 0;
+    }
+
+    private void building() throws Exception{
+        File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
+
         System.out.println("Building in : " + sourcePath);
 
 

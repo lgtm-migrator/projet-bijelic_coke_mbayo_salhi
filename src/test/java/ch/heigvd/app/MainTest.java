@@ -78,7 +78,7 @@ public class MainTest
 
         // Delete the test directory
         try {
-            FileUtils.deleteDirectory(pathToTestDir);
+            FileUtils.deleteDirectory(testPath.toFile());
         }
         catch (Exception e) {
             System.out.println(e.getMessage());

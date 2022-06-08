@@ -42,7 +42,16 @@ public class MainTest
     public void statiqueCleanShouldDeleteDirectory() {
         // Tests if the test directory already exists to avoid overwriting a
         // legit directory
-        assertFalse(Files.exists(testPath));
+        // Delet test directory if it exists
+        if (Files.exists(testPath)) {
+            try {
+                FileUtils.deleteDirectory(testPath.toFile());
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
         buildPath.toFile().mkdirs();
 
         // Creates test files
@@ -94,21 +103,24 @@ public class MainTest
         CommandLine cmd = new CommandLine(app);
         cmd.setOut(new PrintWriter(sw));
 
-        // check that the test directory doesn't exist
-        assertFalse("Test directory already exists",
-                Files.exists(testPath));
+        // Delet test directory if it exists
+        if (Files.exists(testPath)) {
+            try {
+                FileUtils.deleteDirectory(testPath.toFile());
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
 
         int exitCode = cmd.execute("init", sitePath.toString());
         assertEquals(0, exitCode);
 
         // check that config.json exists
+        assertTrue(Files.exists(sitePath.resolve("config.json")));
+
         // check that index.md exists
-
-        String confFile = "config.json";
-        String indexFile = "index.md";
-
-        assertTrue(Files.exists(sitePath.resolve(confFile)));
-        assertTrue(Files.exists(sitePath.resolve(indexFile)));
+        assertTrue(Files.exists(sitePath.resolve("index.md")));
 
         try {
             FileUtils.deleteDirectory(testPath.toFile());

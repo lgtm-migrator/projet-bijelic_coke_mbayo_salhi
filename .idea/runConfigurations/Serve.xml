@@ -2,7 +2,7 @@
   <configuration default="false" name="Serve" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="ch.heigvd.app.Main" />
     <module name="projet-bijelic_coke_mbayo_salhi" />
-    <option name="PROGRAM_PARAMETERS" value="serve" />
+    <option name="PROGRAM_PARAMETERS" value="serve montest/templatetest/build" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="ch.heigvd.app.*" />

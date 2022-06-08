@@ -5,6 +5,8 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 @Command(name = "clean")
@@ -16,10 +18,10 @@ public class Clean implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
 
-        File myPath =
-                new File(System.getProperty("user" + ".dir") + path + "/build");
+        Path pathToClean = Paths.get(System.getProperty("user" + ".dir")).resolve(path).resolve("build");
+        System.out.println("PathTClean = " + pathToClean);
 
-        FileUtils.deleteDirectory(myPath);
+        FileUtils.deleteDirectory(pathToClean.toFile());
 
         System.out.println("Build directory cleaned");
 

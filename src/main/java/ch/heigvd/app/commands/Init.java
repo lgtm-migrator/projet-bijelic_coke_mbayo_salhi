@@ -63,6 +63,16 @@ public class Init implements Callable<Integer> {
             destinationDirectory.mkdirs();
 
             FileUtils.copyDirectory(sourceDirectory, destinationDirectory);
+
+            // template
+            sourceDirectory = Paths.get("template").toFile();
+            destinationDirectory =
+                    Paths.get(myPath + File.separator + path + File.separator +
+                            "template").toFile();
+
+            destinationDirectory.mkdirs();
+
+            FileUtils.copyDirectory(sourceDirectory, destinationDirectory);
         }
 
         return 0;

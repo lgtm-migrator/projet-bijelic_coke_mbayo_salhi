@@ -1,28 +1,3 @@
-# projet-bijelic_coke_mbayo_salhi
-## Auteurs
-- Alen Bijelic
-- Anthony Coke
-- Guilain Mbayo
-- Mehdi Salhi
-
---- 
-title: "DIL - Static - Manuel Utilisateur"
-
-author:
-
-- Alen Bijelic
-- Anthony Coke
-- Guilain Mbayo
-- Mehdi Salhi
-
-date : \today
-titlepage: true
-logo: figures/logo.png
-toc: true
-toc-own-page: true
-colorlinks: true
-...
-
 # Introduction
 
 Static est un générateur de site statique. Il permet de générer des pages au
@@ -33,6 +8,12 @@ besoin de connaître le HTML.
 ## Construit avec
 - Maven
 - Picocli
+
+## Auteurs
+- Alen Bijelic
+- Anthony Coke
+- Guilain Mbayo
+- Mehdi Salhi
 
 ## Prérequis
 - Installation de Maven

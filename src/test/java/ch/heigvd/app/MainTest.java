@@ -75,7 +75,6 @@ public class MainTest
 
         File path = buildPath.toFile();
 
-        System.out.println("Site path = " + sitePath);
 
         int exitCode = cmd.execute("clean", sitePath.toString());
         assertEquals(0, exitCode);
@@ -112,7 +111,6 @@ public class MainTest
                 System.out.println(e.getMessage());
             }
         }
-
         int exitCode = cmd.execute("init", sitePath.toString());
         assertEquals(0, exitCode);
 

@@ -22,10 +22,8 @@ public class Init implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
 
-        Path myPath = Paths.get(System.getProperty("user" + ".dir")).resolve(path);
-
-        System.out.println("Initializing: " + path);
-
+        File myFile = new File(System.getProperty("user" + ".dir"));
+        Path myPath = myFile.toPath().toAbsolutePath();
 
         Boolean exists = false;
         if(!overwrite) {
@@ -37,7 +35,8 @@ public class Init implements Callable<Integer> {
             // check if files already exists in destination folder
             if(pathnames != null){
                 for (String file : pathnames) {
-                    File pathToFile = myPath.resolve(file).toFile();
+                    File pathToFile =
+                            myPath.resolve(myPath + "/" + path + "/" + file).toFile();
                     if (Files.exists(pathToFile.toPath())) {
                         System.out.println("File \"" + file + "\" already exists");
                         if (!exists) {
@@ -57,9 +56,11 @@ public class Init implements Callable<Integer> {
         // copy config directory to init path
         if(!exists || overwrite) {
             File sourceDirectory = Paths.get("config").toFile();
-            File destinationDirectory = myPath.toFile();
+            File destinationDirectory =
+                    Paths.get(myPath + File.separator + path).toFile();
 
-            sourceDirectory.mkdirs();
+            //sourceDirectory.mkdirs();
+            destinationDirectory.mkdirs();
 
             FileUtils.copyDirectory(sourceDirectory, destinationDirectory);
         }

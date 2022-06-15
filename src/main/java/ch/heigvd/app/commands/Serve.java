@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,8 +18,7 @@ import utils.watchDir.WatchDir;
 
 @Command(name = "serve")
 public class Serve implements Callable<Integer> {
-    @CommandLine.Parameters(index = "0", description = "Path to serve " +
-            "directory")
+    @CommandLine.Parameters(index = "0", description = "Path to serve directory")
     private Path path;
 
     @CommandLine.Option(names = {"-w", "--watch"}, description = "Allows to regenerate site when modification are made")
@@ -33,7 +31,6 @@ public class Serve implements Callable<Integer> {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
         Javalin app = Javalin.create().start(7070);
-        FileRenderer FileRenderer;
         AtomicBoolean running = new AtomicBoolean(true);
         File index =
                 new File(System.getProperty("user" + ".dir"));

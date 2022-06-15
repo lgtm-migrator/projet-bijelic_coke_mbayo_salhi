@@ -78,7 +78,6 @@ class Layout{
 @Command(name = "build")
 public class Build implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Path to build directory")
-
     private Path sourcePath;
 
     @CommandLine.Option(names = {"-w", "--watch"}, description = "Allows to regenerate site when modification are made")

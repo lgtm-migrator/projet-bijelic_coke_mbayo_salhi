@@ -10,12 +10,11 @@ import io.javalin.http.SinglePageHandler;
  */
 public class JsonConverter {
     /**
-     * Convert a json string into a java object
-     * @param input the json string
-     * @return the java object
+     * Converts a json string into a java object for site config
+     * @param input JSON string
+     * @return Java object
      * @see <a href="https://github.com/google/gson">gson</a>
      */
-
     public static SiteConfig convertSite(String input){
 
         Gson gson = new Gson();
@@ -23,6 +22,11 @@ public class JsonConverter {
         return gson.fromJson(input, SiteConfig.class);
     }
 
+    /**
+     * Converts a json string into a java object for page config
+     * @param input JSON string
+     * @return Java object
+     */
     public static PageConfig convertPage(String input){
         Gson gson = new Gson();
 

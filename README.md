@@ -76,11 +76,11 @@ static build mon/site
 ```                                                                             
 
 Permet de régénérer le site à la volée lorsque des changements sont effectués   
-dans le système de fichier.
+dans le système de fichiers.
 
 ## Serve
 
-Créer un serveur web local et héberge le site statique pour pouvoir le tester.
+Crée un serveur web local et héberge le site statique pour pouvoir le tester.
 (Disponible à l'adresse localhost:7070).
 
 ```
@@ -98,13 +98,10 @@ static serve mon/site
 ```
 
 Permet de régénérer le site à la volée lorsque des changements sont effectués
-dans le système de fichier.
-
-Le site est maintenant accessible à l'adresse `http://localhost:7070` depuis le
-navigateur.
+dans le système de fichiers.
 
 ## Clean
-Efface le répertoire "build" du site
+Efface le répertoire `build` du site
 
 ```
 static clean mon/site
@@ -112,8 +109,6 @@ static clean mon/site
 
 ## Help
 Affiche l'aide et la liste des commandes
-
-Utilisation:
 
 ```
 static help
@@ -128,7 +123,7 @@ static publish
 ```
 
 ## Version
-Affichage de la version du programme
+Affiche la version du programme
 
 ```
 static --version
@@ -156,7 +151,7 @@ static init mon/site
 ```
 
 2. Modifier les pages suivantes selon les paramètres voulus
-   - mon/site/config.yaml
+   - mon/site/config.json
    - mon/site/index.md
 
 3. Ajouter des pages au format Markdown (.md) en prenant comme modèle la page
@@ -168,6 +163,6 @@ static init mon/site
 static build mon/site
 ```
 
-Un répertoire "build" se crée dans le dossier mon/site. Il contient le site web
+Un répertoire `build` se crée dans le dossier mon/site. Il contient le site web
 convertit au format HTML. Ce répertoire peut être upload sur un serveur web.
 

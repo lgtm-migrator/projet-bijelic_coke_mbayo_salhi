@@ -1,50 +1,67 @@
 # projet-bijelic_coke_mbayo_salhi
-## Authors
+## Auteurs
 - Alen Bijelic
 - Anthony Coke
 - Guilain Mbayo
 - Mehdi Salhi
 
-## About the project
+--- 
+title: "DIL - Static - Manuel Utilisateur"
 
-This project consists in the creation of a static website generator. It is given within the lecture DIL in HEIG-VD.
+author:
 
-## Built with
+- Alen Bijelic
+- Anthony Coke
+- Guilain Mbayo
+- Mehdi Salhi
+
+date : \today
+titlepage: true
+logo: figures/logo.png
+toc: true
+toc-own-page: true
+colorlinks: true
+...
+
+# Introduction
+
+Static est un générateur de site statique. Il permet de générer des pages au
+format html à partir de fichier Markdown. Cela permet d'éditer facilement et
+rapidement du contenu grâce à la syntaxe simple du format Markdown sans avoir
+besoin de connaître le HTML.
+
+## Construit avec
 - Maven
 - Picocli
 
-## Getting started
+## Prérequis
+- Installation de Maven
+- Java version 11
 
-### Prerequisites
 
-### Installation
+# Mise en place
 
-### Usage
-
-## Contact
-
-## Acknowledgments
-
-# User Manual
-
-## Build
-Construit le site web à partir des fichiers de configuration et des pages
-markdown.
-
+Cloner le [dépôt GitHub](https://github.com/dil-classroom/projet-bijelic_coke_mbayo_salhi).
+```
+git clone https://github.com/dil-classroom/projet-bijelic_coke_mbayo_salhi.git
+```
+Se rendre dans le répertoire du projet.
 
 ```
-statique build
+cd projet-bijelic_coke_mbayo_salhi 
 ```
-
-## Clean
-## Help
-Affiche l'aide et la liste des commandes
-
-Utilisation:
+Exécuter les commandes suivantes:
 
 ```
-statique help
+mvn clean install
+unzip -o target/static.zip
+
+export PATH=$PATH:`pwd`/static/bin
 ```
+
+Une fois cela fait, l'application peut être utilisée grâce aux commandes dans la section suivante.
+
+# Liste des commandes
 
 ## Init
 
@@ -52,25 +69,101 @@ Initialise l'arborescence d'un nouveau site avec des fichier markdown d'exemple.
 
 
 ```
-statique init /mon/site
+static init mon/site 
 ```
 
-## New
+Deux fichiers `config.json` et `index.md` seront créés automatiquement par le programme. Les valeurs du fichier json peuvent être modifiées. Dans le fichier markdown, les valeurs des métadonnées ainsi que le cod
+e markdown sont également modifiables.
+
+## Build
+Construit le site web à partir des fichiers de configuration et des pages
+markdown.
+
+
+```
+static build mon/site
+```
+
+### Paramètres
+
+```                                                                             
+--watch                                                                         
+```                                                                             
+
+```                                                                             
+-w                                                                              
+```                                                                             
+
+Permet de régénérer le site à la volée lorsque des changements sont effectués   
+dans le système de fichier.
+
+## Serve
+
+Créer un serveur web local et héberge le site statique pour pouvoir le tester.
+(Disponible à l'adresse localhost:7070).
+
+```
+static serve mon/site
+```
+
+### Paramètres
+
+```
+--watch
+```
+
+```
+-w
+```
+
+Permet de régénérer le site à la volée lorsque des changements sont effectués
+dans le système de fichier.
+
+Le site est maintenant accessible à l'adresse `http://localhost:7070` depuis le
+navigateur.
+
+## Clean
+Efface le répertoire "build" du site
+
+```
+static clean mon/site
+```
+
+## Help
+Affiche l'aide et la liste des commandes
+
+Utilisation:
+
+```
+static help
+```
+
 ## Publish
 
 Publie un site sur un repository GitHub distant
 
-
 ```
-statique publish
+static publish
 ```
 
-## Serve
 ## Version
-Affichage la version du programme
+Affichage de la version du programme
 
 ```
-statique --version
+static --version
+```
+
+ou
+
+```
+static -V
+```
+
+## New
+Affiche "New" dans la console
+
+```
+static new
 ```
 
 # Utilisation typique
@@ -78,12 +171,12 @@ statique --version
 1. Initialiser le dossier actuel pour créer un site modèle
 
 ```
-statique init /mon/site
+static init mon/site
 ```
 
 2. Modifier les pages suivantes selon les paramètres voulus
-    - /mon/site/config.yaml
-    - /mon/site/index.md
+   - mon/site/config.yaml
+   - mon/site/index.md
 
 3. Ajouter des pages au format Markdown (.md) en prenant comme modèle la page
    index.md
@@ -91,8 +184,9 @@ statique init /mon/site
 4. Construire le site avec la commande build
 
 ```
-statique build /mon/site
+static build mon/site
 ```
 
-Un répertoire "build" se crée dans le dossier /mon/site. Il contient le site web
+Un répertoire "build" se crée dans le dossier mon/site. Il contient le site web
 convertit au format HTML. Ce répertoire peut être upload sur un serveur web.
+

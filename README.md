@@ -1,7 +1,7 @@
 # Introduction
 
 Static est un générateur de site statique. Il permet de générer des pages au
-format html à partir de fichier Markdown. Cela permet d'éditer facilement et
+format html à partir de fichiers Markdown. Cela permet d'éditer facilement et
 rapidement du contenu grâce à la syntaxe simple du format Markdown sans avoir
 besoin de connaître le HTML.
 
@@ -31,7 +31,7 @@ Se rendre dans le répertoire du projet.
 ```
 cd projet-bijelic_coke_mbayo_salhi 
 ```
-Exécuter les commandes suivantes:
+Exécuter les commandes suivantes :
 
 ```
 mvn clean install
@@ -46,7 +46,8 @@ Une fois cela fait, l'application peut être utilisée grâce aux commandes dans
 
 ## Init
 
-Initialise l'arborescence d'un nouveau site avec des fichier markdown d'exemple.
+Initialise l'arborescence d'un nouveau site avec des fichiers markdown et json
+d'exemple.
 
 
 ```
@@ -65,6 +66,8 @@ markdown.
 static build mon/site
 ```
 
+Crée un dossier `build` contenant le site généré.
+
 ### Paramètres
 
 ```                                                                             
@@ -75,8 +78,8 @@ static build mon/site
 -w                                                                              
 ```                                                                             
 
-Permet de régénérer le site à la volée lorsque des changements sont effectués   
-dans le système de fichiers.
+Permet de régénérer le site à la volée lorsque des changements sont 
+effectués dans le système de fichiers.
 
 ## Serve
 

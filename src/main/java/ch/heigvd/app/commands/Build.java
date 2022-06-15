@@ -77,17 +77,15 @@ class Layout{
 
 @Command(name = "build")
 public class Build implements Callable<Integer> {
-    @CommandLine.Parameters(index = "0", description = "Path to build " + "directory")
+    @CommandLine.Parameters(index = "0", description = "Path to build directory")
 
     private Path sourcePath;
 
-    private Layout layout = null;
-
-    final private String CONFIG_FILENAME = "config.json";
-  
     @CommandLine.Option(names = {"-w", "--watch"}, description = "Allows to regenerate site when modification are made")
     private boolean watchDir;
 
+    private Layout layout = null;
+    final private String CONFIG_FILENAME = "config.json";
     final private String BUILD_DIRECTORY_NAME = "build";
     final private String MARKDOWN_FILE_TYPE = "md";
     final private Set<String> DIRECTORIES_TO_EXCLUDE = Set.of("build");
@@ -103,7 +101,7 @@ public class Build implements Callable<Integer> {
             // The while loop allows to rebuild, but it make an infinite loop that should probably be corrected later
             while(!future.isCancelled()) {
                 if (watcher.isRebuild()) {
-                    building();
+                    buildFiles();
                     watcher.setRebuild(false);
                 }
             }
@@ -115,15 +113,13 @@ public class Build implements Callable<Integer> {
             executor.awaitTermination(1, TimeUnit.SECONDS);
             executor.shutdownNow();
         }else {
-            building();
+            buildFiles();
         }
 
         return 0;
     }
 
-    private void building() throws Exception{
-        File myPath = new File(System.getProperty("user" + ".dir") + "/" + sourcePath + "/");
-
+    private void buildFiles() {
         System.out.println("Building in : " + sourcePath);
 
 

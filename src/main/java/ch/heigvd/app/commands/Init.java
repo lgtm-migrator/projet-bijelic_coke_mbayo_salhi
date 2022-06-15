@@ -36,7 +36,7 @@ public class Init implements Callable<Integer> {
             if(pathnames != null){
                 for (String file : pathnames) {
                     File pathToFile =
-                            myPath.resolve(myPath + "/" + path + "/" + file).toFile();
+                            myPath.resolve(myPath + File.separator + path + File.separator + file).toFile();
                     if (Files.exists(pathToFile.toPath())) {
                         System.out.println("File \"" + file + "\" already exists");
                         if (!exists) {

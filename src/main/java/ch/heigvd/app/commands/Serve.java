@@ -35,15 +35,20 @@ public class Serve implements Callable<Integer> {
         Javalin app = Javalin.create().start(7070);
         FileRenderer FileRenderer;
         AtomicBoolean running = new AtomicBoolean(true);
-        File index = new File(System.getProperty("user" + ".dir") + "/" + path.toString() + "/build/index.html");
-        if(!Files.exists(index.toPath())){
+        File index =
+                new File(System.getProperty("user" + ".dir"));
+        Path indexPath = index.toPath().resolve(path.toString()).resolve(
+                "build").resolve("index.html");
+
+
+        if(!Files.exists(indexPath)){
             System.out.println("Le fichier index.html n'existe pas!");
             TimeUnit.SECONDS.sleep(3);
             return -1;
         }
 
         System.out.println("Serve");
-        app.get("/", ctx -> ctx.html(new String(Files.readAllBytes(Paths.get(index.toString())))));
+        app.get("/", ctx -> ctx.html(new String(Files.readAllBytes(indexPath))));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             app.stop();

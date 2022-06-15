@@ -119,10 +119,12 @@ static help
 
 ## Publish
 
+Note: cette commande n'est pas fonctionnelle.
+
 Publie un site sur un repository GitHub distant
 
 ```
-static publish
+static publish mon/site
 ```
 
 ## Version

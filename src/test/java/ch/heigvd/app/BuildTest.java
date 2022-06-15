@@ -164,7 +164,7 @@ public class BuildTest {
         );
     }
 
-    //@After()
+    @After()
     public void deleteTestDirectory() {
         System.out.println("Delete test directory if exists");
         try{

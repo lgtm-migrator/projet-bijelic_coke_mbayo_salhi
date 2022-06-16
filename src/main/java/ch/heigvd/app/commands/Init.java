@@ -12,8 +12,7 @@ import java.util.concurrent.Callable;
 
 @Command(name = "init")
 public class Init implements Callable<Integer> {
-    @CommandLine.Parameters(index = "0", description = "Path to init " +
-            "directory")
+    @CommandLine.Parameters(index = "0", description = "Path to init directory")
     private String path;
 
     @CommandLine.Option(names = {"-f", "--force"}, description = "Overwrite files")

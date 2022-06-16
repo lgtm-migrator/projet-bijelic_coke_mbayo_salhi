@@ -1,10 +1,8 @@
 package ch.heigvd.app;
 
-
 import ch.heigvd.app.commands.*;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
-
 import java.util.concurrent.Callable;
 import picocli.CommandLine.IVersionProvider;
 
